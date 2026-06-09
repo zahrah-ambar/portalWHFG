@@ -6,20 +6,95 @@
 <title>TAC SYSTEM</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:Arial,sans-serif;font-size:14px;background:#fff;color:#000;}
-input,select,textarea{width:100%;border:1px solid #999;padding:6px 8px;font-size:14px;font-family:Arial;}
-input:focus,select:focus,textarea:focus{outline:2px solid #000;}
-button{padding:7px 16px;font-size:14px;font-family:Arial;cursor:pointer;border:1px solid #000;background:#000;color:#fff;}
-button.outline{background:#fff;color:#000;}
-button:hover{opacity:.8;}
-button:disabled{opacity:.4;cursor:not-allowed;}
-table{width:100%;border-collapse:collapse;font-size:13px;}
-th{background:#000;color:#fff;padding:7px 8px;text-align:left;white-space:nowrap;}
-td{padding:7px 8px;border-bottom:1px solid #ddd;vertical-align:middle;}
-tr:hover td{background:#f5f5f5;}
-.page{display:none;}
-.page.on{display:flex;flex-direction:column;min-height:100vh;}
-.topbar{background:#000;color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
-.topbar strong{font-size:15px;}
+
+
+<!-- LOGIN -->
+<div class="page on" id="pg-login">
+  <div style="width:100%;max-width:360px;padding:0 16px">
+    <h2 style="text-align:center;margin-bottom:6px;">TAC SYSTEM</h2>
+    <p style="text-align:center;margin-bottom:20px;font-size:12px;color:#555;">WH FINISH GOODS</p>
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <button id="rb-cm" onclick="setRole('cellman')" style="flex:1">CELLMAN</button>
+      <button id="rb-adm" onclick="setRole('admin')" class="outline" style="flex:1">ADMIN</button>
+    </div>
+    <div class="fgroup"><label class="flabel">EMAIL</label><input id="l-email" type="email" value="cellman@tac.app"></div>
+    <div class="fgroup"><label class="flabel">PASSWORD</label><input id="l-pass" type="password" value="cellman123"></div>
+    <button id="btn-login" onclick="doLogin()" style="width:100%;margin-top:4px">MASUK</button>
+    <div id="l-err"></div>
+  </div>
+</div>
+
+<!-- CELLMAN -->
+<div class="page" id="pg-cellman">
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="btn-hamburger" onclick="toggleSidebar('cm')" title="Buka/tutup menu">
+        <span></span><span></span><span></span>
+      </button>
+      <strong>TAC SYSTEM</strong>
+    </div>
+    <div class="topbar-right">
+      <span id="cm-name-label" style="font-size:12px;opacity:.7;"></span>
+      <button onclick="doLogout()" style="padding:4px 10px;font-size:12px;">KELUAR</button>
+    </div>
+  </div>
+  <div class="layout">
+    <div class="sidebar" id="cm-sidebar">
+      <div class="sidebar-logo">MENU</div>
+      <ul class="sidebar-menu">
+        <li><a id="cm-menu-form" class="active" onclick="cmShowPage('form')"><span class="menu-icon">📝</span>FORM TAC</a></li>
+        <li><a id="cm-menu-report" onclick="cmShowPage('report')"><span class="menu-icon">📊</span>REPORT</a></li>
+      </ul>
+    </div>
+    <div class="main-content">
+      <!-- FORM TAC -->
+      <div id="cm-page-form">
+        <h2>INPUT FORM TAC</h2>
+        <div class="row">
+          <div class="col">
+            <div class="fgroup"><label class="flabel">NAMA CELLMAN *</label><input type="text" id="cm-nama" placeholder="nama lengkap"></div>
+          </div>
+          <div class="col">
+            <div class="fgroup"><label class="flabel">TANGGAL *</label><input type="date" id="cm-tanggal"></div>
+          </div>
+          <div class="col">
+            <div class="fgroup">
+              <label class="flabel">FROM SUB IO <span class="opt-label">(opsional)</span></label>
+              <div class="sdd-wrap" id="sdd-cm-from"></div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="fgroup">
+              <label class="flabel">TO SUB IO <span class="opt-label">(opsional)</span></label>
+              <div class="sdd-wrap" id="sdd-cm-to"></div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="fgroup"><label class="flabel">ITEM DESC *</label><input type="text" id="cm-item" placeholder="nama item"></div>
+          </div>
+          <div class="col">
+            <div class="fgroup"><label class="flabel">UKURAN *</label>
+              <select id="cm-motif">
+                <option value="">— pilih —</option>
+                <option>30x30</option><option>40x40</option><option>50x50</option><option>60x60</option><option>80x80</option>
+              </select>
+            </div>
+          </div>
+          <div class="col">
+            <div class="fgroup"><label class="flabel">LOT NO *</label><input type="text" id="cm-lot" placeholder="nomor lot"></div>
+          </div>
+          <div class="col">
+            <div class="fgroup"><label class="flabel">QTY *</label><input type="number" id="cm-qty" placeholder="0" min="0"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col" style="max-width:400px;">
+            <div class="fgroup"><label class="flabel">NOTE *</label><input type="text" id="cm-note" placeholder="isi keterangan..."></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:4px;">
+          <button id="btn-cm-submit" onclick="submitTAC()">KIRIM</button>
+          <button onclick="clearCMForm()" class="outline">DELETE</button>
+        
