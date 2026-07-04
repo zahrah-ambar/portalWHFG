@@ -306,7 +306,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>FROM SUB IO</th>
                 <th>TO SUB IO</th><th>UK MOTIF</th><th>ITEM DESC</th><th>LOT NO</th>
-                <th>QTY</th><th>NOTE</th><th>STATUS</th><th>ACTION BY</th><th>EDIT</th>
+                <th>QTY</th><th>NOTE</th><th>STATUS</th><th>ACTION</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="cm-tbody">
@@ -404,7 +404,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>SUBINVENTORY</th><th>UK MOTIF</th>
                 <th>ITEM DESC</th><th>LOT NO</th><th>QTY</th>
-                <th>REASON</th><th>STATUS</th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION BY</th><th>EDIT</th>
+                <th>REASON</th><th>STATUS</th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="brg-tbody">
@@ -513,7 +513,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>FROM SUB IO</th>
                 <th>TO SUB IO</th><th>UK MOTIF</th><th>ITEM DESC</th><th>LOT NO</th>
-                <th>QTY</th><th>NOTE</th><th>STATUS</th><th>ACTION BY</th><th>EDIT</th>
+                <th>QTY</th><th>NOTE</th><th>STATUS</th><th>ACTION</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="adm-tbody">
@@ -547,7 +547,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>SUBINVENTORY</th><th>UK MOTIF</th>
                 <th>ITEM DESC</th><th>LOT NO</th><th>QTY</th>
-                <th>REASON</th><th>STATUS</th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION BY</th><th>EDIT</th>
+                <th>REASON</th><th>STATUS</th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="adm-brg-tbody">
@@ -691,7 +691,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
     <!-- ACTION BY — selalu tampil; readonly saat Cellman, editable saat Admin -->
     <div style="display:flex;gap:10px;flex-wrap:wrap;" id="me-actionby-wrap">
       <div class="fgroup" style="flex:1;min-width:200px;">
-        <label class="flabel" id="me-action-by-label">ACTION BY</label>
+        <label class="flabel" id="me-action-by-label">ACTION</label>
         <input type="text" id="me-action-by" placeholder="—">
         <div class="readonly-info" id="me-action-by-hint" style="display:none;">Diisi oleh Admin — tidak dapat diubah</div>
       </div>
@@ -772,7 +772,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
     <!-- ACTION BY — selalu tampil; readonly saat Cellman, editable saat Admin -->
     <div style="display:flex;gap:10px;flex-wrap:wrap;" id="mbrg-actionby-wrap">
       <div class="fgroup" style="flex:1;min-width:200px;">
-        <label class="flabel" id="mbrg-action-by-label">ACTION BY</label>
+        <label class="flabel" id="mbrg-action-by-label">ACTION</label>
         <input type="text" id="mbrg-action-by" placeholder="—">
         <div class="readonly-info" id="mbrg-action-by-hint" style="display:none;">Diisi oleh Admin — tidak dapat diubah</div>
       </div>
@@ -1327,7 +1327,7 @@ function openEditModal(id, caller) {
   document.getElementById('me-action-by-hint').style.display = isCM ? '' : 'none';
   document.getElementById('me-action-by-label').textContent = isCM
     ? 'ACTION BY (info)'
-    : 'ACTION BY (nama admin — isi manual)';
+    : 'ACTION BY';
 
   document.getElementById('modal').style.display = 'flex';
 }
@@ -1404,7 +1404,7 @@ function openEditModalBRG(id, caller) {
   document.getElementById('mbrg-action-by-hint').style.display = !isAdm ? '' : 'none';
   document.getElementById('mbrg-action-by-label').textContent = !isAdm
     ? 'ACTION BY (info)'
-    : 'ACTION BY (nama admin — isi manual)';
+    : 'ACTION BY';
 
   document.getElementById('modal-brg').style.display = 'flex';
 }
@@ -1504,7 +1504,7 @@ function badge(s) {
 
 // ── EXCEL HELPERS ──
 function buildExcelData(rows) {
-  var headers = ['NO','NAMA','TANGGAL','FROM SUB IO','TO SUB IO','UK MOTIF','ITEM DESC','LOT NO','QTY','NOTE','STATUS','ACTION BY','ACTION AT'];
+  var headers = ['NO','NAMA','TANGGAL','FROM SUB IO','TO SUB IO','UK MOTIF','ITEM DESC','LOT NO','QTY','NOTE','STATUS','ACTION','ACTION AT'];
   var data = [headers];
   rows.forEach(function(r, i) {
     data.push([
@@ -1527,7 +1527,7 @@ function buildExcelData(rows) {
 }
 
 function buildExcelDataBRG(rows) {
-  var headers = ['NO','NAMA','TANGGAL','SUBINVENTORY','UK MOTIF','ITEM DESC','LOT NO','QTY','REASON','STATUS','ACTION BY','ACTION AT'];
+  var headers = ['NO','NAMA','TANGGAL','SUBINVENTORY','UK MOTIF','ITEM DESC','LOT NO','QTY','REASON','STATUS','ACTION','ACTION AT'];
   var data = [headers];
   rows.forEach(function(r, i) {
     data.push([
