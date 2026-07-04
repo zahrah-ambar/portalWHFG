@@ -306,7 +306,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>FROM SUB IO</th>
                 <th>TO SUB IO</th><th>UK MOTIF</th><th>ITEM DESC</th><th>LOT NO</th>
-                <th>QTY</th><th>NOTE</th><th>STATUS</th><th>ACTION</th><th>EDIT</th>
+                <th>QTY</th><th>NOTE</th><th>STATUS</th><th>ACTION BY</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="cm-tbody">
@@ -404,7 +404,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>SUBINVENTORY</th><th>UK MOTIF</th>
                 <th>ITEM DESC</th><th>LOT NO</th><th>QTY</th>
-                <th>REASON</th><th>STATUS</th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION</th><th>EDIT</th>
+                <th>REASON</th><th>STATUS</th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION BY</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="brg-tbody">
@@ -513,7 +513,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>FROM SUB IO</th>
                 <th>TO SUB IO</th><th>UK MOTIF</th><th>ITEM DESC</th><th>LOT NO</th>
-                <th>QTY</th><th>NOTE</th><th>STATUS</th><th>ACTION</th><th>EDIT</th>
+                <th>QTY</th><th>NOTE</th><th>STATUS</th><th>ACTION BY</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="adm-tbody">
@@ -547,7 +547,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>SUBINVENTORY</th><th>UK MOTIF</th>
                 <th>ITEM DESC</th><th>LOT NO</th><th>QTY</th>
-                <th>REASON</th><th>STATUS</th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION</th><th>EDIT</th>
+                <th>REASON</th><th>STATUS</th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION BY</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="adm-brg-tbody">
@@ -691,7 +691,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
     <!-- ACTION BY — selalu tampil; readonly saat Cellman, editable saat Admin -->
     <div style="display:flex;gap:10px;flex-wrap:wrap;" id="me-actionby-wrap">
       <div class="fgroup" style="flex:1;min-width:200px;">
-        <label class="flabel" id="me-action-by-label">ACTION</label>
+        <label class="flabel" id="me-action-by-label">ACTION BY</label>
         <input type="text" id="me-action-by" placeholder="—">
         <div class="readonly-info" id="me-action-by-hint" style="display:none;">Diisi oleh Admin — tidak dapat diubah</div>
       </div>
@@ -769,10 +769,15 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
         </select>
       </div>
     </div>
+    <!-- REASON ADMIN — hanya tampil & bisa diisi saat Admin yang edit -->
+    <div class="fgroup" id="mbrg-reason-admin-wrap" style="display:none;">
+      <label class="flabel">REASON ADMIN</label>
+      <input type="text" id="mbrg-reason-admin" placeholder="alasan / catatan dari admin...">
+    </div>
     <!-- ACTION BY — selalu tampil; readonly saat Cellman, editable saat Admin -->
     <div style="display:flex;gap:10px;flex-wrap:wrap;" id="mbrg-actionby-wrap">
       <div class="fgroup" style="flex:1;min-width:200px;">
-        <label class="flabel" id="mbrg-action-by-label">ACTION</label>
+        <label class="flabel" id="mbrg-action-by-label">ACTION BY</label>
         <input type="text" id="mbrg-action-by" placeholder="—">
         <div class="readonly-info" id="mbrg-action-by-hint" style="display:none;">Diisi oleh Admin — tidak dapat diubah</div>
       </div>
@@ -798,11 +803,10 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
 </div>
 
 <script>
-const SUPA_URL = 'https://eyqgrwfigistgiddsypi.supabase.co';
-const SUPA_KEY = 'sb_publishable_E9-SgMtkL9NlfAYRl0uiXA_n2GQU30I';
+const SUPA_URL = 'https://addgggshvsvnzbzdbgnq.supabase.co';
+const SUPA_KEY = 'sb_publishable__xCcA-NNlTCRpF8K5c5LUw_k2I_1789';
 const { createClient } = supabase;
 const db = createClient(SUPA_URL, SUPA_KEY);
-
 
 var role = 'cellman';
 var currentUser = null;
@@ -1327,7 +1331,7 @@ function openEditModal(id, caller) {
   document.getElementById('me-action-by-hint').style.display = isCM ? '' : 'none';
   document.getElementById('me-action-by-label').textContent = isCM
     ? 'ACTION BY (info)'
-    : 'ACTION BY';
+    : 'ACTION BY (nama admin — isi manual)';
 
   document.getElementById('modal').style.display = 'flex';
 }
@@ -1394,17 +1398,20 @@ function openEditModalBRG(id, caller) {
   document.getElementById('mbrg-note').value         = rec.note         || '';
   document.getElementById('mbrg-status').value       = rec.status       || 'DRAFT';
   document.getElementById('mbrg-action-by').value    = rec.action_by    || '';
+  document.getElementById('mbrg-reason-admin').value = rec.reason_admin || '';
 
   var isAdm = caller === 'adm';
   // STATUS: sembunyikan untuk CM
   document.getElementById('mbrg-status-wrap').style.display = isAdm ? '' : 'none';
+  // REASON ADMIN: hanya tampil & bisa diisi saat Admin
+  document.getElementById('mbrg-reason-admin-wrap').style.display = isAdm ? '' : 'none';
   // ACTION BY: selalu tampil, tapi readonly jika CM
   document.getElementById('mbrg-actionby-wrap').style.display = '';
   document.getElementById('mbrg-action-by').disabled = !isAdm;
   document.getElementById('mbrg-action-by-hint').style.display = !isAdm ? '' : 'none';
   document.getElementById('mbrg-action-by-label').textContent = !isAdm
     ? 'ACTION BY (info)'
-    : 'ACTION BY';
+    : 'ACTION BY (nama admin — isi manual)';
 
   document.getElementById('modal-brg').style.display = 'flex';
 }
@@ -1434,9 +1441,9 @@ async function saveEditBRG() {
     updates.action_by    = actionName ? actionName.toUpperCase() : (currentUser ? currentUser.email : '');
     updates.action_at    = new Date().toISOString();
     updates.penyelesaian = document.getElementById('mbrg-status').value;
-    var raWrap = document.getElementById('mbrg-reason-admin');
-    if (raWrap) {
-      var ra = raWrap.value.trim();
+    var raInput = document.getElementById('mbrg-reason-admin');
+    if (raInput) {
+      var ra = raInput.value.trim();
       updates.reason_admin = ra ? ra.toUpperCase() : '-';
     }
   }
@@ -1504,7 +1511,7 @@ function badge(s) {
 
 // ── EXCEL HELPERS ──
 function buildExcelData(rows) {
-  var headers = ['NO','NAMA','TANGGAL','FROM SUB IO','TO SUB IO','UK MOTIF','ITEM DESC','LOT NO','QTY','NOTE','STATUS','ACTION','ACTION AT'];
+  var headers = ['NO','NAMA','TANGGAL','FROM SUB IO','TO SUB IO','UK MOTIF','ITEM DESC','LOT NO','QTY','NOTE','STATUS','ACTION BY','ACTION AT'];
   var data = [headers];
   rows.forEach(function(r, i) {
     data.push([
@@ -1527,7 +1534,7 @@ function buildExcelData(rows) {
 }
 
 function buildExcelDataBRG(rows) {
-  var headers = ['NO','NAMA','TANGGAL','SUBINVENTORY','UK MOTIF','ITEM DESC','LOT NO','QTY','REASON','STATUS','ACTION','ACTION AT'];
+  var headers = ['NO','NAMA','TANGGAL','SUBINVENTORY','UK MOTIF','ITEM DESC','LOT NO','QTY','REASON','STATUS','ACTION BY','ACTION AT'];
   var data = [headers];
   rows.forEach(function(r, i) {
     data.push([
