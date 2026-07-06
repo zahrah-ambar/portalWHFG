@@ -261,7 +261,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
         <div class="row">
           <div class="col">
             <div class="fgroup">
-              <label class="flabel">ITEM DESC *</label>
+              <label class="flabel">MOTIF *</label>
               <input type="text" id="cm-item" placeholder="nama item">
             </div>
           </div>
@@ -273,7 +273,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
           </div>
           <div class="col">
             <div class="fgroup">
-              <label class="flabel">QTY *</label>
+              <label class="flabel">JUMLAH *</label>
               <input type="number" id="cm-qty" placeholder="0" min="0">
             </div>
           </div>
@@ -281,18 +281,18 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
         <div class="row">
           <div class="col" style="max-width:400px;">
             <div class="fgroup">
-              <label class="flabel">NOTE *</label>
+              <label class="flabel">CATATAN *</label>
               <input type="text" id="cm-note" placeholder="isi keterangan...">
             </div>
           </div>
         </div>
         <div style="display:flex;gap:8px;margin-top:4px;">
-          <button id="btn-cm-submit" onclick="submitTAC()">SEND</button>
-          <button onclick="clearCMForm()" class="outline">DELETE</button>
+          <button id="btn-cm-submit" onclick="submitTAC()">KIRIM</button>
+          <button onclick="clearCMForm()" class="outline">HAPUS</button>
         </div>
         <div id="cm-msg"></div>
 
-        <h2 style="margin-top:24px;">HISTORY</h2>
+        <h2 style="margin-top:24px;">RIWAYAT</h2>
         <div class="toolbar">
           <div class="search-wrap">
             <input id="cm-search" type="text" placeholder="cari nama / item / lot..." oninput="filterCMTable()">
@@ -305,8 +305,8 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <thead>
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>FROM SUB IO</th>
-                <th>TO SUB IO</th><th>UK MOTIF</th><th>ITEM DESC</th><th>LOT NO</th>
-                <th>QTY</th><th>NOTE</th><th>STATUS</th><th>ACTION BY</th><th>EDIT</th>
+                <th>TO SUB IO</th><th>UK MOTIF</th><th>MOTIF</th><th>LOT NO</th>
+                <th>QTY</th><th>CATATAN</th><th>STATUS</th><th>ACTION</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="cm-tbody">
@@ -359,7 +359,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
         <div class="row">
           <div class="col">
             <div class="fgroup">
-              <label class="flabel">ITEM DESC *</label>
+              <label class="flabel">MOTIF *</label>
               <input type="text" id="brg-item" placeholder="nama item">
             </div>
           </div>
@@ -371,7 +371,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
           </div>
           <div class="col">
             <div class="fgroup">
-              <label class="flabel">QTY *</label>
+              <label class="flabel">JUMLAH *</label>
               <input type="number" id="brg-qty" placeholder="0" min="0">
             </div>
           </div>
@@ -379,14 +379,14 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
         <div class="row">
           <div class="col" style="max-width:400px;">
             <div class="fgroup">
-              <label class="flabel">REASON *</label>
+              <label class="flabel">ALASAN *</label>
               <input type="text" id="brg-note" placeholder="alasan barang bermasalah...">
             </div>
           </div>
         </div>
         <div style="display:flex;gap:8px;margin-top:4px;">
-          <button id="btn-brg-submit" onclick="submitBRG()">SEND</button>
-          <button onclick="clearBRGForm()" class="outline">DELETE</button>
+          <button id="btn-brg-submit" onclick="submitBRG()">KIRIM</button>
+          <button onclick="clearBRGForm()" class="outline">HAPUS</button>
         </div>
         <div id="brg-msg"></div>
 
@@ -403,8 +403,8 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <thead>
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>SUBINVENTORY</th><th>UK MOTIF</th>
-                <th>ITEM DESC</th><th>LOT NO</th><th>QTY</th>
-                <th>REASON</th><th>STATUS</th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION BY</th><th>EDIT</th>
+                <th>MOTIF</th><th>LOT NO</th><th>JML</th>
+                <th>ALASAN</th><th>STATUS</th><th>ALASAN ADMIN</th><th>PENYELESAIAN</th><th>ACTION</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="brg-tbody">
@@ -691,7 +691,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
     <!-- ACTION BY — selalu tampil; readonly saat Cellman, editable saat Admin -->
     <div style="display:flex;gap:10px;flex-wrap:wrap;" id="me-actionby-wrap">
       <div class="fgroup" style="flex:1;min-width:200px;">
-        <label class="flabel" id="me-action-by-label">ACTION BY</label>
+        <label class="flabel" id="me-action-by-label">ACTION</label>
         <input type="text" id="me-action-by" placeholder="—">
         <div class="readonly-info" id="me-action-by-hint" style="display:none;">Diisi oleh Admin — tidak dapat diubah</div>
       </div>
@@ -777,7 +777,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
     <!-- ACTION BY — selalu tampil; readonly saat Cellman, editable saat Admin -->
     <div style="display:flex;gap:10px;flex-wrap:wrap;" id="mbrg-actionby-wrap">
       <div class="fgroup" style="flex:1;min-width:200px;">
-        <label class="flabel" id="mbrg-action-by-label">ACTION BY</label>
+        <label class="flabel" id="mbrg-action-by-label">ACTION</label>
         <input type="text" id="mbrg-action-by" placeholder="—">
         <div class="readonly-info" id="mbrg-action-by-hint" style="display:none;">Diisi oleh Admin — tidak dapat diubah</div>
       </div>
@@ -1331,7 +1331,7 @@ function openEditModal(id, caller) {
   document.getElementById('me-action-by-hint').style.display = isCM ? '' : 'none';
   document.getElementById('me-action-by-label').textContent = isCM
     ? 'ACTION BY (info)'
-    : 'ACTION BY (nama admin — isi manual)';
+    : 'ACTION BY';
 
   document.getElementById('modal').style.display = 'flex';
 }
@@ -1411,7 +1411,7 @@ function openEditModalBRG(id, caller) {
   document.getElementById('mbrg-action-by-hint').style.display = !isAdm ? '' : 'none';
   document.getElementById('mbrg-action-by-label').textContent = !isAdm
     ? 'ACTION BY (info)'
-    : 'ACTION BY (nama admin — isi manual)';
+    : 'ACTION BY';
 
   document.getElementById('modal-brg').style.display = 'flex';
 }
