@@ -95,6 +95,15 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
 .menu-notif-badge{display:inline-block;background:#c00;color:#fff;font-size:10px;font-weight:bold;border-radius:10px;padding:1px 6px;margin-left:6px;min-width:16px;text-align:center;line-height:1.3;vertical-align:middle;}
 .menu-parent .menu-notif-badge{margin-left:auto;margin-right:6px;}
 
+/* NOTIF PERMISSION BANNER */
+.notif-banner{display:none;align-items:center;justify-content:space-between;gap:10px;background:#fff8e1;border:1px solid #e0c04a;padding:8px 12px;font-size:12px;margin:0 0 12px;flex-wrap:wrap;}
+.notif-banner.show{display:flex;}
+.notif-banner span{flex:1;min-width:180px;}
+.notif-banner button{padding:5px 10px;font-size:12px;}
+.notif-status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;}
+.notif-status-dot.on{background:#2a7;}
+.notif-status-dot.off{background:#c00;}
+
 @media (max-width: 640px) {
   .sidebar{position:fixed;top:0;left:0;height:100vh;z-index:200;width:0;transition:width .25s ease;}
   .sidebar.open-mobile{width:220px;}
@@ -171,6 +180,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
       <strong>TAC SYSTEM</strong>
     </div>
     <div class="topbar-right">
+      <button onclick="toggleNotifPanelInfo()" id="cm-notif-bell" title="Status notifikasi" style="padding:4px 8px;font-size:14px;background:transparent;border:none;color:#fff;cursor:pointer;">🔔</button>
       <span id="cm-name-label" style="font-size:12px;opacity:.7;"></span>
       <button onclick="doLogout()" style="padding:4px 10px;font-size:12px;">KELUAR</button>
     </div>
@@ -202,6 +212,11 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
       </ul>
     </div>
     <div class="main-content">
+
+      <div class="notif-banner" id="cm-notif-banner">
+        <span><span class="notif-status-dot off" id="cm-notif-dot"></span><span id="cm-notif-text">Aktifkan notifikasi HP agar Anda mendapat pemberitahuan saat Admin memproses data Anda.</span></span>
+        <button onclick="requestNotifPermission()">AKTIFKAN</button>
+      </div>
 
       <!-- FORM TAC -->
       <div id="cm-page-form-tac">
@@ -457,6 +472,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
       <strong>TAC SYSTEM — ADMIN</strong>
     </div>
     <div class="topbar-right">
+      <button onclick="toggleNotifPanelInfo()" id="adm-notif-bell" title="Status notifikasi" style="padding:4px 8px;font-size:14px;background:transparent;border:none;color:#fff;cursor:pointer;">🔔</button>
       <span id="adm-email-label" style="font-size:12px;opacity:.7;"></span>
       <button onclick="doLogout()" style="padding:4px 10px;font-size:12px;">KELUAR</button>
     </div>
@@ -488,6 +504,11 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
       </ul>
     </div>
     <div class="main-content">
+
+      <div class="notif-banner" id="adm-notif-banner">
+        <span><span class="notif-status-dot off" id="adm-notif-dot"></span><span id="adm-notif-text">Aktifkan notifikasi HP agar Anda langsung tahu saat ada TAC / Barang Bermasalah baru.</span></span>
+        <button onclick="requestNotifPermission()">AKTIFKAN</button>
+      </div>
 
       <!-- DATA TAC (ADMIN) -->
       <div id="adm-page-data-tac">
@@ -827,6 +848,90 @@ var LOCKED_STATUSES_FOR_CELLMAN = ['POSTED'];
 var rtChannel = null;
 var badgeCounts = { 'cm-tac':0, 'cm-brg':0, 'adm-tac':0, 'adm-brg':0 };
 
+// ── NOTIFIKASI HP (Web Notification API) ──
+var NOTIF_ICON = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4e6.png';
+
+function notifSupported() {
+  return ('Notification' in window);
+}
+
+// Update tampilan banner + titik status sesuai izin saat ini
+function refreshNotifUI() {
+  if (!notifSupported()) return;
+  var perm = Notification.permission; // 'default' | 'granted' | 'denied'
+  ['cm', 'adm'].forEach(function(prefix) {
+    var banner = document.getElementById(prefix + '-notif-banner');
+    var dot    = document.getElementById(prefix + '-notif-dot');
+    var text   = document.getElementById(prefix + '-notif-text');
+    if (!banner) return;
+    if (perm === 'granted') {
+      banner.classList.remove('show');
+      if (dot)  dot.className = 'notif-status-dot on';
+    } else if (perm === 'denied') {
+      banner.classList.add('show');
+      banner.querySelector('button').style.display = 'none';
+      if (text) text.textContent = 'Notifikasi diblokir browser. Aktifkan lewat pengaturan situs (izin notifikasi) lalu refresh halaman.';
+      if (dot)  dot.className = 'notif-status-dot off';
+    } else {
+      banner.classList.add('show');
+      var btn = banner.querySelector('button');
+      if (btn) btn.style.display = '';
+      if (dot) dot.className = 'notif-status-dot off';
+    }
+  });
+}
+
+// Diklik dari tombol lonceng 🔔 di topbar — cuma info singkat
+function toggleNotifPanelInfo() {
+  if (!notifSupported()) { alert('Browser ini tidak mendukung notifikasi.'); return; }
+  var perm = Notification.permission;
+  if (perm === 'granted') {
+    alert('🔔 Notifikasi AKTIF. Anda akan menerima notifikasi HP untuk update terbaru selama tab TAC SYSTEM ini terbuka (boleh diminimize).');
+  } else if (perm === 'denied') {
+    alert('🔕 Notifikasi DIBLOKIR. Buka pengaturan situs di browser Anda, izinkan Notification untuk situs ini, lalu refresh halaman.');
+  } else {
+    requestNotifPermission();
+  }
+}
+
+async function requestNotifPermission() {
+  if (!notifSupported()) { alert('Browser ini tidak mendukung notifikasi.'); return; }
+  try {
+    var result = await Notification.requestPermission();
+    refreshNotifUI();
+    if (result === 'granted') {
+      sendNativeNotification('🔔 Notifikasi Aktif', 'TAC SYSTEM akan mengirim notifikasi ke HP Anda saat ada update.');
+    }
+  } catch(e) {
+    console.error('Gagal minta izin notifikasi:', e);
+  }
+}
+
+// Kirim notifikasi ke layar HP/desktop (muncul di tray notifikasi OS)
+function sendNativeNotification(title, body) {
+  if (!notifSupported()) return;
+  if (Notification.permission !== 'granted') return;
+  try {
+    var n = new Notification(title, {
+      body: body || '',
+      icon: NOTIF_ICON,
+      badge: NOTIF_ICON,
+      tag: 'tac-system-' + Date.now(),
+      vibrate: [200, 100, 200]
+    });
+    n.onclick = function() {
+      window.focus();
+      n.close();
+    };
+    // Getarkan HP kalau didukung (tambahan efek di Android)
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    // Auto tutup setelah beberapa detik biar tidak menumpuk
+    setTimeout(function() { n.close(); }, 8000);
+  } catch(e) {
+    console.error('Gagal mengirim notifikasi:', e);
+  }
+}
+
 // ── SIDEBAR ──
 function toggleSidebar(who) {
   var sb = document.getElementById(who + '-sidebar');
@@ -911,6 +1016,7 @@ function enterApp(r, email) {
     loadCMData();
     startRealtimeCellman();
   }
+  refreshNotifUI();
 }
 
 async function doLogout() {
@@ -1636,7 +1742,7 @@ async function downloadExcelBRGADM() {
   msg.innerHTML = '<div class="msg ok">✓ File berhasil didownload (' + data.length + ' baris)</div>';
 }
 
-// ── TOAST NOTIFIKASI ──
+// ── TOAST NOTIFIKASI (dalam halaman) ──
 function showToast(icon, title, desc) {
   var container = document.getElementById('toast-container');
   var el = document.createElement('div');
@@ -1673,6 +1779,7 @@ function startRealtimeAdmin() {
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'tac' }, function(payload) {
       var r = payload.new;
       showToast('📝', 'TAC baru masuk', (r.nama || '-') + ' • ' + (r.item_desc || '-'));
+      sendNativeNotification('📝 TAC Baru Masuk', (r.nama || '-') + ' • ' + (r.item_desc || '-') + ' • ' + (r.qty || '-') + ' pcs');
       bumpBadge('adm-tac');
       loadADMData();
     })
@@ -1682,6 +1789,7 @@ function startRealtimeAdmin() {
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'barang_bermasalah' }, function(payload) {
       var r = payload.new;
       showToast('⚠️', 'Barang Bermasalah baru', (r.nama || '-') + ' • ' + (r.item_desc || '-'));
+      sendNativeNotification('⚠️ Barang Bermasalah Baru', (r.nama || '-') + ' • ' + (r.item_desc || '-'));
       bumpBadge('adm-brg');
       loadADMBRGData();
     })
@@ -1700,6 +1808,7 @@ function startRealtimeCellman() {
       var r = payload.new;
       if (r.created_by !== email) return;
       showToast('✅', 'Data TAC Anda diupdate Admin', (r.item_desc || '-') + ' • status: ' + (r.status || '-'));
+      sendNativeNotification('✅ TAC Anda Diupdate', (r.item_desc || '-') + ' • status: ' + (r.status || '-'));
       bumpBadge('cm-tac');
       loadCMData();
     })
@@ -1707,6 +1816,7 @@ function startRealtimeCellman() {
       var r = payload.new;
       if (r.created_by !== email) return;
       showToast('✅', 'Barang Bermasalah diupdate Admin', (r.item_desc || '-') + ' • status: ' + (r.status || '-'));
+      sendNativeNotification('✅ Barang Bermasalah Diupdate', (r.item_desc || '-') + ' • status: ' + (r.status || '-'));
       bumpBadge('cm-brg');
       loadBRGData();
     })
