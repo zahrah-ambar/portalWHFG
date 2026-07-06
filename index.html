@@ -306,7 +306,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>FROM SUB IO</th>
                 <th>TO SUB IO</th><th>UK MOTIF</th><th>MOTIF</th><th>LOT NO</th>
-                <th>QTY</th><th>CATATAN</th><th>STATUS</th><th>ACTION</th><th>EDIT</th>
+                <th>JMLH</th><th>CATATAN</th><th>STATUS</th><th>ACTION</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="cm-tbody">
@@ -512,8 +512,8 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <thead>
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>FROM SUB IO</th>
-                <th>TO SUB IO</th><th>UK MOTIF</th><th>ITEM DESC</th><th>LOT NO</th>
-                <th>QTY</th><th>NOTE</th><th>STATUS</th><th>ACTION BY</th><th>EDIT</th>
+                <th>TO SUB IO</th><th>UK MOTIF</th><th>MOTIF</th><th>LOT NO</th>
+                <th>JMLH</th><th>NOTE</th><th>STATUS</th><th>ACTION BY</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="adm-tbody">
@@ -546,8 +546,8 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <thead>
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>SUBINVENTORY</th><th>UK MOTIF</th>
-                <th>ITEM DESC</th><th>LOT NO</th><th>QTY</th>
-                <th>REASON</th><th>STATUS</th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION BY</th><th>EDIT</th>
+                <th>MOTIF</th><th>LOT NO</th><th>JMLH</th>
+                <th>ALASAN</th><th>STATUS</th><th>ALASAN ADMIN</th><th>PENYELESAIAN</th><th>ACTION BY</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="adm-brg-tbody">
@@ -661,7 +661,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <div class="fgroup" style="flex:1;min-width:140px;">
-        <label class="flabel">ITEM DESC</label>
+        <label class="flabel">MOTIF</label>
         <input type="text" id="me-item">
       </div>
       <div class="fgroup" style="flex:1;min-width:100px;">
@@ -669,7 +669,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
         <input type="text" id="me-lot">
       </div>
       <div class="fgroup" style="flex:1;min-width:70px;">
-        <label class="flabel">QTY</label>
+        <label class="flabel">JMLH</label>
         <input type="number" id="me-qty" min="0">
       </div>
     </div>
@@ -742,7 +742,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <div class="fgroup" style="flex:1;min-width:140px;">
-        <label class="flabel">ITEM DESC</label>
+        <label class="flabel">MOTIF</label>
         <input type="text" id="mbrg-item">
       </div>
       <div class="fgroup" style="flex:1;min-width:100px;">
@@ -750,13 +750,13 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
         <input type="text" id="mbrg-lot">
       </div>
       <div class="fgroup" style="flex:1;min-width:70px;">
-        <label class="flabel">QTY</label>
+        <label class="flabel">JMLH</label>
         <input type="number" id="mbrg-qty" min="0">
       </div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <div class="fgroup" style="flex:2;min-width:200px;">
-        <label class="flabel">REASON</label>
+        <label class="flabel">ALASAN</label>
         <input type="text" id="mbrg-note">
       </div>
       <div class="fgroup" style="flex:1;min-width:130px;" id="mbrg-status-wrap">
@@ -771,7 +771,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
     </div>
     <!-- REASON ADMIN — hanya tampil & bisa diisi saat Admin yang edit -->
     <div class="fgroup" id="mbrg-reason-admin-wrap" style="display:none;">
-      <label class="flabel">REASON ADMIN</label>
+      <label class="flabel">ALASAN ADMIN</label>
       <input type="text" id="mbrg-reason-admin" placeholder="alasan / catatan dari admin...">
     </div>
     <!-- ACTION BY — selalu tampil; readonly saat Cellman, editable saat Admin -->
@@ -1511,7 +1511,7 @@ function badge(s) {
 
 // ── EXCEL HELPERS ──
 function buildExcelData(rows) {
-  var headers = ['NO','NAMA','TANGGAL','FROM SUB IO','TO SUB IO','UK MOTIF','ITEM DESC','LOT NO','QTY','NOTE','STATUS','ACTION BY','ACTION AT'];
+  var headers = ['NO','NAMA','TANGGAL','FROM SUB IO','TO SUB IO','UK MOTIF','MOTIF','LOT NO','QTY','NOTE','STATUS','ACTION BY','ACTION AT'];
   var data = [headers];
   rows.forEach(function(r, i) {
     data.push([
@@ -1534,7 +1534,7 @@ function buildExcelData(rows) {
 }
 
 function buildExcelDataBRG(rows) {
-  var headers = ['NO','NAMA','TANGGAL','SUBINVENTORY','UK MOTIF','ITEM DESC','LOT NO','QTY','REASON','STATUS','ACTION BY','ACTION AT'];
+  var headers = ['NO','NAMA','TANGGAL','SUBINVENTORY','UK MOTIF','MOTIF','LOT NO','QTY','ALASAN','STATUS','ACTION BY','ACTION AT'];
   var data = [headers];
   rows.forEach(function(r, i) {
     data.push([
