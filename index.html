@@ -65,6 +65,14 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
 .filter-row .fgroup{margin-bottom:0;min-width:140px;}
 .opt-label{font-weight:normal;color:#888;font-size:11px;}
 .toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
+.pager{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:12px;font-size:13px;}
+.pager button{padding:5px 12px;font-size:12px;}
+.pager button:disabled{opacity:.35;cursor:not-allowed;}
+.pager span{min-width:50px;text-align:center;font-weight:bold;}
+@media (max-width:640px){
+  .pager{flex-wrap:wrap;gap:8px;}
+  .pager button{flex:1;min-width:110px;}
+}
 .search-wrap{display:flex;gap:0;flex:1;min-width:180px;max-width:340px;}
 .search-wrap input{border-right:none;border-radius:0;}
 .search-wrap button{border-radius:0;padding:6px 12px;white-space:nowrap;flex-shrink:0;}
@@ -329,6 +337,11 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             </tbody>
           </table>
         </div>
+        <div class="pager" id="cm-pager">
+          <button onclick="cmGoToPage(-1)" class="outline">← SEBELUMNYA</button>
+          <span id="cm-pager-info">1 / 1</span>
+          <button onclick="cmGoToPage(1)" class="outline">BERIKUTNYA →</button>
+        </div>
       </div>
 
       <!-- FORM BARANG BERMASALAH (CELLMAN) -->
@@ -426,6 +439,11 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr><td colspan="14" style="text-align:center;padding:20px;color:#888;">— belum ada data —</td></tr>
             </tbody>
           </table>
+        </div>
+        <div class="pager" id="brg-pager">
+          <button onclick="brgGoToPage(-1)" class="outline">← SEBELUMNYA</button>
+          <span id="brg-pager-info">1 / 1</span>
+          <button onclick="brgGoToPage(1)" class="outline">BERIKUTNYA →</button>
         </div>
       </div>
 
@@ -542,6 +560,11 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             </tbody>
           </table>
         </div>
+        <div class="pager" id="adm-pager">
+          <button onclick="admGoToPage(-1)" class="outline">← SEBELUMNYA</button>
+          <span id="adm-pager-info">1 / 1</span>
+          <button onclick="admGoToPage(1)" class="outline">BERIKUTNYA →</button>
+        </div>
       </div>
 
       <!-- DATA BARANG BERMASALAH (ADMIN) -->
@@ -575,6 +598,11 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr><td colspan="14" style="text-align:center;padding:20px;color:#888;">— memuat data —</td></tr>
             </tbody>
           </table>
+        </div>
+        <div class="pager" id="adm-brg-pager">
+          <button onclick="admBrgGoToPage(-1)" class="outline">← SEBELUMNYA</button>
+          <span id="adm-brg-pager-info">1 / 1</span>
+          <button onclick="admBrgGoToPage(1)" class="outline">BERIKUTNYA →</button>
         </div>
       </div>
 
@@ -827,7 +855,13 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
 const SUPA_URL = 'https://eyqgrwfigistgiddsypi.supabase.co';
 const SUPA_KEY = 'sb_publishable_E9-SgMtkL9NlfAYRl0uiXA_n2GQU30I';
 const { createClient } = supabase;
-const db = createClient(SUPA_URL, SUPA_KEY);
+const db = createClient(SUPA_URL, SUPA_KEY, {
+  auth: {
+    persistSession: true,     // simpan sesi login di localStorage browser
+    autoRefreshToken: true,   // perpanjang otomatis sebelum token kedaluwarsa
+    detectSessionInUrl: false
+  }
+});
 
 // VAPID public key untuk Web Push (private key disimpan di server/Supabase Edge Function, TIDAK di sini)
 const VAPID_PUBLIC_KEY = 'BP6VbY5iMIlT8RIjST1MpY12JZoFkqesqZaoQ3qz825LXGvNJQFEhehIgkn6garLREqlxe55XvEjwjhB3Nqhfrw';
@@ -1269,6 +1303,10 @@ async function loadCMData() {
   filterCMTable();
 }
 
+var ITEMS_PER_PAGE = 10;
+var cmPage = 1;
+var cmFilteredRows = [];
+
 function filterCMTable() {
   var search = (document.getElementById('cm-search').value || '').toLowerCase();
   var filtered = search
@@ -1279,10 +1317,36 @@ function filterCMTable() {
         (r.note||'').toLowerCase().includes(search)
       )
     : cmData;
-  renderCMTable(filtered);
+  cmFilteredRows = filtered;
+  cmPage = 1;
+  renderCMTablePage();
 }
 
-function renderCMTable(rows) {
+function cmGoToPage(delta) {
+  cmPage += delta;
+  renderCMTablePage();
+}
+
+function renderCMTablePage() {
+  var totalPages = Math.max(1, Math.ceil(cmFilteredRows.length / ITEMS_PER_PAGE));
+  if (cmPage > totalPages) cmPage = totalPages;
+  if (cmPage < 1) cmPage = 1;
+  var start = (cmPage - 1) * ITEMS_PER_PAGE;
+  var pageRows = cmFilteredRows.slice(start, start + ITEMS_PER_PAGE);
+  renderCMTable(pageRows, start);
+
+  var info = document.getElementById('cm-pager-info');
+  if (info) info.textContent = cmPage + ' / ' + totalPages;
+  var pager = document.getElementById('cm-pager');
+  if (pager) {
+    var btns = pager.querySelectorAll('button');
+    btns[0].disabled = cmPage <= 1;
+    btns[1].disabled = cmPage >= totalPages;
+  }
+}
+
+function renderCMTable(rows, offset) {
+  offset = offset || 0;
   var html = '';
   rows.forEach(function(r, i) {
     var locked = LOCKED_STATUSES_FOR_CELLMAN.includes(r.status);
@@ -1293,7 +1357,7 @@ function renderCMTable(rows) {
           '<button class="btn-icon del" data-id="' + r.id + '" data-caller="cm" onclick="hapusData(this.dataset.id,this.dataset.caller)">🗑️</button>' +
         '</div>';
     html += '<tr>' +
-      '<td>' + (i+1) + '</td>' +
+      '<td>' + (offset+i+1) + '</td>' +
       '<td>' + (r.nama||'-') + '</td>' +
       '<td>' + (r.tanggal||'-') + '</td>' +
       '<td>' + (r.from_sub_io||'-') + '</td>' +
@@ -1375,10 +1439,39 @@ function filterBRGTable() {
         (r.lot_no||'').toLowerCase().includes(search)
       )
     : brgData;
-  renderBRGTable(filtered, 'brg-tbody', 'cm');
+  brgFilteredRows = filtered;
+  brgPage = 1;
+  renderBRGTablePage();
 }
 
-function renderBRGTable(rows, tbodyId, caller) {
+var brgPage = 1;
+var brgFilteredRows = [];
+
+function brgGoToPage(delta) {
+  brgPage += delta;
+  renderBRGTablePage();
+}
+
+function renderBRGTablePage() {
+  var totalPages = Math.max(1, Math.ceil(brgFilteredRows.length / ITEMS_PER_PAGE));
+  if (brgPage > totalPages) brgPage = totalPages;
+  if (brgPage < 1) brgPage = 1;
+  var start = (brgPage - 1) * ITEMS_PER_PAGE;
+  var pageRows = brgFilteredRows.slice(start, start + ITEMS_PER_PAGE);
+  renderBRGTable(pageRows, 'brg-tbody', 'cm', start);
+
+  var info = document.getElementById('brg-pager-info');
+  if (info) info.textContent = brgPage + ' / ' + totalPages;
+  var pager = document.getElementById('brg-pager');
+  if (pager) {
+    var btns = pager.querySelectorAll('button');
+    btns[0].disabled = brgPage <= 1;
+    btns[1].disabled = brgPage >= totalPages;
+  }
+}
+
+function renderBRGTable(rows, tbodyId, caller, offset) {
+  offset = offset || 0;
   var html = '';
   rows.forEach(function(r, i) {
     var locked = caller === 'cm' && LOCKED_STATUSES_FOR_CELLMAN.includes(r.status);
@@ -1389,7 +1482,7 @@ function renderBRGTable(rows, tbodyId, caller) {
           '<button class="btn-icon del" data-id="' + String(r.id) + '" data-caller="brg-' + caller + '" onclick="hapusData(this.dataset.id,this.dataset.caller)">🗑️</button>' +
         '</div>';
     html += '<tr>' +
-      '<td>' + (i+1) + '</td>' +
+      '<td>' + (offset+i+1) + '</td>' +
       '<td>' + (r.nama||'-') + '</td>' +
       '<td>' + (r.tanggal||'-') + '</td>' +
       '<td>' + (r.from_sub_io||'-') + '</td>' +
@@ -1423,6 +1516,9 @@ async function loadADMData() {
   filterTable();
 }
 
+var admPage = 1;
+var admFilteredRows = [];
+
 function filterTable() {
   var search = (document.getElementById('adm-search').value || '').toLowerCase();
   var fSt    = document.getElementById('adm-filter').value;
@@ -1436,10 +1532,40 @@ function filterTable() {
     );
     return ok;
   });
+  admFilteredRows = filtered;
+  admPage = 1;
+  renderADMTablePage();
+}
+
+function admGoToPage(delta) {
+  admPage += delta;
+  renderADMTablePage();
+}
+
+function renderADMTablePage() {
+  var totalPages = Math.max(1, Math.ceil(admFilteredRows.length / ITEMS_PER_PAGE));
+  if (admPage > totalPages) admPage = totalPages;
+  if (admPage < 1) admPage = 1;
+  var start = (admPage - 1) * ITEMS_PER_PAGE;
+  var pageRows = admFilteredRows.slice(start, start + ITEMS_PER_PAGE);
+  renderADMTable(pageRows, start);
+
+  var info = document.getElementById('adm-pager-info');
+  if (info) info.textContent = admPage + ' / ' + totalPages;
+  var pager = document.getElementById('adm-pager');
+  if (pager) {
+    var btns = pager.querySelectorAll('button');
+    btns[0].disabled = admPage <= 1;
+    btns[1].disabled = admPage >= totalPages;
+  }
+}
+
+function renderADMTable(filtered, offset) {
+  offset = offset || 0;
   var html = '';
   filtered.forEach(function(r, i) {
     html += '<tr>' +
-      '<td>' + (i+1) + '</td>' +
+      '<td>' + (offset+i+1) + '</td>' +
       '<td>' + (r.nama||'-') + '</td>' +
       '<td>' + (r.tanggal||'-') + '</td>' +
       '<td>' + (r.from_sub_io||'-') + '</td>' +
@@ -1488,7 +1614,35 @@ function filterADMBRGTable() {
     );
     return ok;
   });
-  renderBRGTable(filtered, 'adm-brg-tbody', 'adm');
+  admBrgFilteredRows = filtered;
+  admBrgPage = 1;
+  renderADMBRGTablePage();
+}
+
+var admBrgPage = 1;
+var admBrgFilteredRows = [];
+
+function admBrgGoToPage(delta) {
+  admBrgPage += delta;
+  renderADMBRGTablePage();
+}
+
+function renderADMBRGTablePage() {
+  var totalPages = Math.max(1, Math.ceil(admBrgFilteredRows.length / ITEMS_PER_PAGE));
+  if (admBrgPage > totalPages) admBrgPage = totalPages;
+  if (admBrgPage < 1) admBrgPage = 1;
+  var start = (admBrgPage - 1) * ITEMS_PER_PAGE;
+  var pageRows = admBrgFilteredRows.slice(start, start + ITEMS_PER_PAGE);
+  renderBRGTable(pageRows, 'adm-brg-tbody', 'adm', start);
+
+  var info = document.getElementById('adm-brg-pager-info');
+  if (info) info.textContent = admBrgPage + ' / ' + totalPages;
+  var pager = document.getElementById('adm-brg-pager');
+  if (pager) {
+    var btns = pager.querySelectorAll('button');
+    btns[0].disabled = admBrgPage <= 1;
+    btns[1].disabled = admBrgPage >= totalPages;
+  }
 }
 
 // ── MODAL EDIT TAC ──
