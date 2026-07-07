@@ -829,6 +829,9 @@ const SUPA_KEY = 'sb_publishable_E9-SgMtkL9NlfAYRl0uiXA_n2GQU30I';
 const { createClient } = supabase;
 const db = createClient(SUPA_URL, SUPA_KEY);
 
+// VAPID public key untuk Web Push (private key disimpan di server/Supabase Edge Function, TIDAK di sini)
+const VAPID_PUBLIC_KEY = 'BP6VbY5iMIlT8RIjST1MpY12JZoFkqesqZaoQ3qz825LXGvNJQFEhehIgkn6garLREqlxe55XvEjwjhB3Nqhfrw';
+
 var role = 'cellman';
 var currentUser = null;
 var allData = [];
@@ -848,11 +851,85 @@ var LOCKED_STATUSES_FOR_CELLMAN = ['POSTED'];
 var rtChannel = null;
 var badgeCounts = { 'cm-tac':0, 'cm-brg':0, 'adm-tac':0, 'adm-brg':0 };
 
-// ── NOTIFIKASI HP (Web Notification API) ──
+// ── NOTIFIKASI HP: Notification API (tab terbuka) + Web Push (app ditutup) ──
 var NOTIF_ICON = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4e6.png';
+
+var swRegistration = null;
 
 function notifSupported() {
   return ('Notification' in window);
+}
+
+function pushSupported() {
+  return ('serviceWorker' in navigator) && ('PushManager' in window);
+}
+
+// Ubah base64 VAPID key jadi Uint8Array (format yang diminta PushManager)
+function urlBase64ToUint8Array(base64String) {
+  var padding = '='.repeat((4 - base64String.length % 4) % 4);
+  var base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  var rawData = atob(base64);
+  var outputArray = new Uint8Array(rawData.length);
+  for (var i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+// Daftarkan service worker sekali saat halaman load (tidak perlu izin dulu)
+async function registerServiceWorker() {
+  if (!pushSupported()) return null;
+  try {
+    swRegistration = await navigator.serviceWorker.register('/service-worker.js');
+    return swRegistration;
+  } catch(e) {
+    console.error('Gagal daftar service worker:', e);
+    return null;
+  }
+}
+
+// Subscribe ke Push Manager dan simpan endpoint-nya ke Supabase
+async function subscribeToPush() {
+  if (!pushSupported()) return;
+  if (!swRegistration) swRegistration = await registerServiceWorker();
+  if (!swRegistration) return;
+
+  try {
+    var existing = await swRegistration.pushManager.getSubscription();
+    var sub = existing || await swRegistration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+    });
+
+    var json = sub.toJSON();
+    var email = currentUser ? currentUser.email : '';
+    if (!email) return;
+
+    await db.from('push_subscriptions').upsert({
+      user_email : email,
+      role       : isAdminEmail(email) ? 'admin' : 'cellman',
+      endpoint   : json.endpoint,
+      p256dh     : json.keys.p256dh,
+      auth       : json.keys.auth
+    }, { onConflict: 'endpoint' });
+
+  } catch(e) {
+    console.error('Gagal subscribe push:', e);
+  }
+}
+
+// Hapus subscription (dipanggil saat logout, supaya device lama tidak terus dikirimi push)
+async function unsubscribeFromPush() {
+  if (!swRegistration) return;
+  try {
+    var sub = await swRegistration.pushManager.getSubscription();
+    if (sub) {
+      await db.from('push_subscriptions').delete().eq('endpoint', sub.endpoint);
+      await sub.unsubscribe();
+    }
+  } catch(e) {
+    console.error('Gagal unsubscribe push:', e);
+  }
 }
 
 // Update tampilan banner + titik status sesuai izin saat ini
@@ -886,7 +963,7 @@ function toggleNotifPanelInfo() {
   if (!notifSupported()) { alert('Browser ini tidak mendukung notifikasi.'); return; }
   var perm = Notification.permission;
   if (perm === 'granted') {
-    alert('🔔 Notifikasi AKTIF. Anda akan menerima notifikasi HP untuk update terbaru selama tab TAC SYSTEM ini terbuka (boleh diminimize).');
+    alert('🔔 Notifikasi AKTIF. Anda akan menerima notifikasi HP untuk update terbaru — bahkan saat aplikasi/tab ini ditutup.');
   } else if (perm === 'denied') {
     alert('🔕 Notifikasi DIBLOKIR. Buka pengaturan situs di browser Anda, izinkan Notification untuk situs ini, lalu refresh halaman.');
   } else {
@@ -900,7 +977,9 @@ async function requestNotifPermission() {
     var result = await Notification.requestPermission();
     refreshNotifUI();
     if (result === 'granted') {
-      sendNativeNotification('🔔 Notifikasi Aktif', 'TAC SYSTEM akan mengirim notifikasi ke HP Anda saat ada update.');
+      sendNativeNotification('🔔 Notifikasi Aktif', 'TAC SYSTEM akan mengirim notifikasi ke HP Anda, bahkan saat app ditutup.');
+      // Daftarkan push subscription agar notifikasi tetap jalan walau tab ditutup
+      await subscribeToPush();
     }
   } catch(e) {
     console.error('Gagal minta izin notifikasi:', e);
@@ -1017,10 +1096,17 @@ function enterApp(r, email) {
     startRealtimeCellman();
   }
   refreshNotifUI();
+
+  // Kalau izin notifikasi sudah pernah diberikan sebelumnya, langsung pastikan
+  // push subscription untuk device ini tersimpan (misal setelah ganti browser/HP baru)
+  if (notifSupported() && Notification.permission === 'granted') {
+    subscribeToPush();
+  }
 }
 
 async function doLogout() {
   stopRealtime();
+  await unsubscribeFromPush();
   await db.auth.signOut();
   currentUser = null;
   show('pg-login');
@@ -1845,6 +1931,9 @@ window.addEventListener('load', function() {
   document.getElementById('adm-brg-rep-dari').value   = firstDay;
   document.getElementById('adm-brg-rep-sampai').value = today;
   document.getElementById('l-email').value = 'cellman@tac.com';
+
+  // Daftarkan service worker sedini mungkin (tidak perlu izin notifikasi dulu)
+  registerServiceWorker();
 
   // Cek apakah ada sesi login yang masih aktif (menangani F5 / refresh)
   checkSession();
