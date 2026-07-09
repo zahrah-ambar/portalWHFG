@@ -1358,20 +1358,32 @@ async function loadCMData() {
 }
 
 var ITEMS_PER_PAGE = 10;
+
+// --- STATE PAGINATION ---
 var cmPage = 1;
 var cmFilteredRows = [];
+var brgPage = 1;
+var brgFilteredRows = [];
+var admPage = 1;
+var admFilteredRows = [];
+var admBrgPage = 1;
+var admBrgFilteredRows = [];
+
+
+// ── DATA & FILTER TAC (CELLMAN) ──
 
 function filterCMTable() {
   var search = (document.getElementById('cm-search').value || '').toLowerCase();
-  var filtered = search
-    ? cmData.filter(r =>
-        (r.nama||'').toLowerCase().includes(search) ||
-        (r.item_desc||'').toLowerCase().includes(search) ||
-        (r.lot_no||'').toLowerCase().includes(search) ||
-        (r.note||'').toLowerCase().includes(search)
-      )
-    : cmData;
-  cmFilteredRows = filtered;
+  var filterEl = document.getElementById('cm-filter');
+  var fSt = filterEl ? filterEl.value : '';
+
+  var filtered = cmData.filter(function(r) {
+    var ok = !fSt || r.status === fSt;
+    if (search) ok = ok && ((r.nama||'').toLowerCase().includes(search) || (r.item_desc||'').toLowerCase().includes(search) || (r.lot_no||'').toLowerCase().includes(search) || (r.note||'').toLowerCase().includes(search));
+    return ok;
+  });
+
+  cmFilteredRows = applySortStatus('cm_tac', filtered);
   cmPage = 1;
   renderCMTablePage();
 }
@@ -1385,12 +1397,14 @@ function renderCMTablePage() {
   var totalPages = Math.max(1, Math.ceil(cmFilteredRows.length / ITEMS_PER_PAGE));
   if (cmPage > totalPages) cmPage = totalPages;
   if (cmPage < 1) cmPage = 1;
+  
   var start = (cmPage - 1) * ITEMS_PER_PAGE;
   var pageRows = cmFilteredRows.slice(start, start + ITEMS_PER_PAGE);
   renderCMTable(pageRows, start);
 
   var info = document.getElementById('cm-pager-info');
   if (info) info.textContent = cmPage + ' / ' + totalPages;
+  
   var pager = document.getElementById('cm-pager');
   if (pager) {
     var btns = pager.querySelectorAll('button');
@@ -1425,11 +1439,12 @@ function renderCMTable(rows, offset) {
       '<td>' + (r.action_by || '<span style="color:#ccc;">—</span>') + '</td>' +
       '<td>' + actionCell + '</td></tr>';
   });
-  document.getElementById('cm-tbody').innerHTML = html ||
-    '<tr><td colspan="13" style="text-align:center;padding:20px;color:#888;">— tidak ada data —</td></tr>';
+  document.getElementById('cm-tbody').innerHTML = html || '<tr><td colspan="13" style="text-align:center;padding:20px;color:#888;">— tidak ada data —</td></tr>';
 }
 
-// ── FORM BARANG BERMASALAH (CELLMAN) ──
+
+// ── DATA & FILTER BARANG BERMASALAH (CELLMAN) ──
+
 async function submitBRG() {
   var nama    = document.getElementById('brg-nama').value.trim();
   var tanggal = document.getElementById('brg-tanggal').value;
@@ -1477,51 +1492,27 @@ function clearBRGForm() {
 
 async function loadBRGData() {
   var email = currentUser ? currentUser.email : '';
-  const { data, error } = await db.from('barang_bermasalah')
-    .select('*').eq('created_by', email).order('created_at', { ascending: false });
+  const { data, error } = await db.from('barang_bermasalah').select('*').eq('created_by', email).order('created_at', { ascending: false });
   if (error) { console.error(error); return; }
   brgData = data || [];
   filterBRGTable();
 }
-// Terapkan fungsi sort ke data yang difilter
-  cmFilteredRows = applySortStatus('cm_tac', filtered);
-  cmPage = 1;
-  renderCMTablePage();
-}
+
 function filterBRGTable() {
   var search = (document.getElementById('brg-search').value || '').toLowerCase();
-  var fSt    = document.getElementById('brg-filter') ? document.getElementById('brg-filter').value : '';
- 
+  var filterEl = document.getElementById('brg-filter');
+  var fSt = filterEl ? filterEl.value : '';
+
   var filtered = brgData.filter(function(r) {
     var ok = !fSt || r.status === fSt;
-    if (search) ok = ok && (
-      (r.nama||'').toLowerCase().includes(search) ||
-      (r.item_desc||'').toLowerCase().includes(search) ||
-      (r.lot_no||'').toLowerCase().includes(search)
-    );
+    if (search) ok = ok && ((r.nama||'').toLowerCase().includes(search) || (r.item_desc||'').toLowerCase().includes(search) || (r.lot_no||'').toLowerCase().includes(search));
     return ok;
   });
-// Terapkan fungsi sort ke data yang difilter
+
   brgFilteredRows = applySortStatus('cm_brg', filtered);
   brgPage = 1;
   renderBRGTablePage();
 }
- function filterTable() {
-  var search = (document.getElementById('adm-search').value || '').toLowerCase();
-  var fSt    = document.getElementById('adm-filter').value;
-  
-  var filtered = allData.filter(function(r) {
-    var ok = !fSt || r.status === fSt;
-    if (search) ok = ok && (
-      (r.nama||'').toLowerCase().includes(search) ||
-      (r.item_desc||'').toLowerCase().includes(search) ||
-      (r.lot_no||'').toLowerCase().includes(search) ||
-      (r.note||'').toLowerCase().includes(search)
-    );
-    return ok;
-  }); 
-var brgPage = 1;
-var brgFilteredRows = [];
 
 function brgGoToPage(delta) {
   brgPage += delta;
@@ -1532,12 +1523,14 @@ function renderBRGTablePage() {
   var totalPages = Math.max(1, Math.ceil(brgFilteredRows.length / ITEMS_PER_PAGE));
   if (brgPage > totalPages) brgPage = totalPages;
   if (brgPage < 1) brgPage = 1;
+  
   var start = (brgPage - 1) * ITEMS_PER_PAGE;
   var pageRows = brgFilteredRows.slice(start, start + ITEMS_PER_PAGE);
   renderBRGTable(pageRows, 'brg-tbody', 'cm', start);
 
   var info = document.getElementById('brg-pager-info');
   if (info) info.textContent = brgPage + ' / ' + totalPages;
+  
   var pager = document.getElementById('brg-pager');
   if (pager) {
     var btns = pager.querySelectorAll('button');
@@ -1573,16 +1566,15 @@ function renderBRGTable(rows, tbodyId, caller, offset) {
       '<td>' + (r.action_by || '<span style="color:#ccc;">—</span>') + '</td>' +
       '<td>' + actionCell + '</td></tr>';
   });
-  document.getElementById(tbodyId).innerHTML = html ||
-    '<tr><td colspan="14" style="text-align:center;padding:20px;color:#888;">— tidak ada data —</td></tr>';
+  document.getElementById(tbodyId).innerHTML = html || '<tr><td colspan="14" style="text-align:center;padding:20px;color:#888;">— tidak ada data —</td></tr>';
 }
 
-// ── DATA TAC (ADMIN) ──
+
+// ── DATA & FILTER TAC (ADMIN) ──
+
 async function loadADMData() {
   document.getElementById('adm-msg').innerHTML = '<div class="msg ok" style="font-size:11px;">⏳ Memuat data...</div>';
-  const { data, error } = await db.from('tac')
-    .select('*')
-    .order('created_at', { ascending: false });
+  const { data, error } = await db.from('tac').select('*').order('created_at', { ascending: false });
   if (error) {
     document.getElementById('adm-msg').innerHTML = '<div class="msg err">Error: ' + error.message + '</div>';
     return;
@@ -1592,24 +1584,18 @@ async function loadADMData() {
   filterTable();
 }
 
-var admPage = 1;
-var admFilteredRows = [];
+function filterTable() {
+  var search = (document.getElementById('adm-search').value || '').toLowerCase();
+  var filterEl = document.getElementById('adm-filter');
+  var fSt = filterEl ? filterEl.value : '';
 
-function filterCMTable() {
-  var search = (document.getElementById('cm-search').value || '').toLowerCase();
-  var fSt    = document.getElementById('cm-filter') ? document.getElementById('cm-filter').value : '';
-  
-  var filtered = cmData.filter(function(r) {
+  var filtered = allData.filter(function(r) {
     var ok = !fSt || r.status === fSt;
-    if (search) ok = ok && (
-      (r.nama||'').toLowerCase().includes(search) ||
-      (r.item_desc||'').toLowerCase().includes(search) ||
-      (r.lot_no||'').toLowerCase().includes(search) ||
-      (r.note||'').toLowerCase().includes(search)
-    );
+    if (search) ok = ok && ((r.nama||'').toLowerCase().includes(search) || (r.item_desc||'').toLowerCase().includes(search) || (r.lot_no||'').toLowerCase().includes(search) || (r.note||'').toLowerCase().includes(search));
     return ok;
   });
-  admFilteredRows = filtered;
+
+  admFilteredRows = applySortStatus('adm_tac', filtered);
   admPage = 1;
   renderADMTablePage();
 }
@@ -1623,12 +1609,14 @@ function renderADMTablePage() {
   var totalPages = Math.max(1, Math.ceil(admFilteredRows.length / ITEMS_PER_PAGE));
   if (admPage > totalPages) admPage = totalPages;
   if (admPage < 1) admPage = 1;
+  
   var start = (admPage - 1) * ITEMS_PER_PAGE;
   var pageRows = admFilteredRows.slice(start, start + ITEMS_PER_PAGE);
   renderADMTable(pageRows, start);
 
   var info = document.getElementById('adm-pager-info');
   if (info) info.textContent = admPage + ' / ' + totalPages;
+  
   var pager = document.getElementById('adm-pager');
   if (pager) {
     var btns = pager.querySelectorAll('button');
@@ -1659,16 +1647,15 @@ function renderADMTable(filtered, offset) {
         '<button class="btn-icon del" data-id="' + r.id + '" data-caller="adm" onclick="hapusData(this.dataset.id,this.dataset.caller)">🗑️</button>' +
       '</div></td></tr>';
   });
-  document.getElementById('adm-tbody').innerHTML = html ||
-    '<tr><td colspan="13" style="text-align:center;padding:20px;color:#888;">— tidak ada data —</td></tr>';
+  document.getElementById('adm-tbody').innerHTML = html || '<tr><td colspan="13" style="text-align:center;padding:20px;color:#888;">— tidak ada data —</td></tr>';
 }
 
-// ── DATA BARANG BERMASALAH (ADMIN) ──
+
+// ── DATA & FILTER BARANG BERMASALAH (ADMIN) ──
+
 async function loadADMBRGData() {
   document.getElementById('adm-brg-msg').innerHTML = '<div class="msg ok" style="font-size:11px;">⏳ Memuat data...</div>';
-  const { data, error } = await db.from('barang_bermasalah')
-    .select('*')
-    .order('created_at', { ascending: false });
+  const { data, error } = await db.from('barang_bermasalah').select('*').order('created_at', { ascending: false });
   if (error) {
     document.getElementById('adm-brg-msg').innerHTML = '<div class="msg err">Error: ' + error.message + '</div>';
     return;
@@ -1678,35 +1665,21 @@ async function loadADMBRGData() {
   filterADMBRGTable();
 }
 
-// Terapkan fungsi sort ke data yang difilter
-  admFilteredRows = applySortStatus('adm_tac', filtered);
-  admPage = 1;
-  renderADMTablePage();
-}
-
 function filterADMBRGTable() {
   var search = (document.getElementById('adm-brg-search').value || '').toLowerCase();
-  var fSt    = document.getElementById('adm-brg-filter').value;
-  
+  var filterEl = document.getElementById('adm-brg-filter');
+  var fSt = filterEl ? filterEl.value : '';
+
   var filtered = admBrgData.filter(function(r) {
     var ok = !fSt || r.status === fSt;
-    if (search) ok = ok && (
-      (r.nama||'').toLowerCase().includes(search) ||
-      (r.item_desc||'').toLowerCase().includes(search) ||
-      (r.lot_no||'').toLowerCase().includes(search) ||
-      (r.note||'').toLowerCase().includes(search)
-    );
+    if (search) ok = ok && ((r.nama||'').toLowerCase().includes(search) || (r.item_desc||'').toLowerCase().includes(search) || (r.lot_no||'').toLowerCase().includes(search) || (r.note||'').toLowerCase().includes(search));
     return ok;
   });
-  
-  // Terapkan fungsi sort ke data yang difilter
+
   admBrgFilteredRows = applySortStatus('adm_brg', filtered);
   admBrgPage = 1;
   renderADMBRGTablePage();
 }
-
-var admBrgPage = 1;
-var admBrgFilteredRows = [];
 
 function admBrgGoToPage(delta) {
   admBrgPage += delta;
@@ -1717,12 +1690,14 @@ function renderADMBRGTablePage() {
   var totalPages = Math.max(1, Math.ceil(admBrgFilteredRows.length / ITEMS_PER_PAGE));
   if (admBrgPage > totalPages) admBrgPage = totalPages;
   if (admBrgPage < 1) admBrgPage = 1;
+  
   var start = (admBrgPage - 1) * ITEMS_PER_PAGE;
   var pageRows = admBrgFilteredRows.slice(start, start + ITEMS_PER_PAGE);
   renderBRGTable(pageRows, 'adm-brg-tbody', 'adm', start);
 
   var info = document.getElementById('adm-brg-pager-info');
   if (info) info.textContent = admBrgPage + ' / ' + totalPages;
+  
   var pager = document.getElementById('adm-brg-pager');
   if (pager) {
     var btns = pager.querySelectorAll('button');
