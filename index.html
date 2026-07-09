@@ -18,7 +18,11 @@ button:hover{opacity:.8;}
 button:disabled{opacity:.4;cursor:not-allowed;}
 table{width:100%;border-collapse:collapse;font-size:13px;}
 th{background:#000;color:#fff;padding:7px 8px;text-align:left;white-space:nowrap;}
-td{padding:7px 8px;border-bottom:1px solid #ddd;vertical-align:middle;}
+th.th-sort:hover{background:#222;}
+th.th-sort .sort-arrow{font-size:10px;opacity:.6;}
+th.th-sort.sort-asc .sort-arrow::after{content:'▲';opacity:1;}
+th.th-sort.sort-desc .sort-arrow::after{content:'▼';opacity:1;}
+th.th-sort:not(.sort-asc):not(.sort-desc) .sort-arrow::after{content:'⇅';}:7px 8px;border-bottom:1px solid #ddd;vertical-align:middle;}
 tr:hover td{background:#f5f5f5;}
 .page{display:none;}
 .page.on{display:flex;flex-direction:column;min-height:100vh;}
@@ -321,6 +325,14 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <input id="cm-search" type="text" placeholder="cari nama / item / lot..." oninput="filterCMTable()">
             <button onclick="filterCMTable()" title="Cari">🔍</button>
           </div>
+<!-- TAMBAHKAN SELECT FILTER INI -->
+<select id="cm-filter" onchange="filterCMTable()" style="width:130px;">
+  <option value="">SEMUA STATUS</option>
+  <option value="DRAFT">DRAFT</option>
+  <option value="WAIT">WAIT</option>
+  <option value="POSTED">POSTED</option>
+  <option value="DONE">DONE</option>
+</select>
           <button onclick="loadCMData()" class="outline" style="font-size:12px;">↺ REFRESH</button>
         </div>
         <div style="overflow-x:auto;">
@@ -329,7 +341,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>FROM SUB IO</th>
                 <th>TO SUB IO</th><th>UK MOTIF</th><th>MOTIF</th><th>LOT NO</th>
-                <th>QTY</th><th>CATATAN</th><th>STATUS</th><th>ACTION</th><th>EDIT</th>
+               <th>QTY</th><th>NOTE</th><th id="th-status-cm_tac" class="th-sort" onclick="toggleStatusSort('cm_tac')" style="cursor:pointer;user-select:none;">STATUS <span class="sort-arrow"></span></th><th>ACTION BY</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="cm-tbody">
@@ -424,6 +436,13 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <input id="brg-search" type="text" placeholder="cari nama / item / lot..." oninput="filterBRGTable()">
             <button onclick="filterBRGTable()" title="Cari">🔍</button>
           </div>
+          <select id="brg-filter" onchange="filterBRGTable()" style="width:130px;">
+          <option value="">SEMUA STATUS</option>
+          <option value="DRAFT">DRAFT</option>
+          <option value="WAIT">WAIT</option>
+          <option value="POSTED">POSTED</option>
+          <option value="DONE">DONE</option>
+          </select>
           <button onclick="loadBRGData()" class="outline" style="font-size:12px;">↺ REFRESH</button>
         </div>
         <div style="overflow-x:auto;">
@@ -552,7 +571,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>FROM SUB IO</th>
                 <th>TO SUB IO</th><th>UK MOTIF</th><th>ITEM DESC</th><th>LOT NO</th>
-                <th>QTY</th><th>NOTE</th><th>STATUS</th><th>ACTION BY</th><th>EDIT</th>
+               <th>QTY</th><th>NOTE</th><th id="th-status-adm_tac" class="th-sort" onclick="toggleStatusSort('adm_tac')" style="cursor:pointer;user-select:none;">STATUS <span class="sort-arrow"></span></th><th>ACTION BY</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="adm-tbody">
@@ -591,7 +610,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>SUBINVENTORY</th><th>UK MOTIF</th>
                 <th>ITEM DESC</th><th>LOT NO</th><th>QTY</th>
-                <th>REASON</th><th>STATUS</th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION BY</th><th>EDIT</th>
+               <th>REASON</th><th id="th-status-adm_brg" class="th-sort" onclick="toggleStatusSort('cm_brg')" style="cursor:pointer;user-select:none;">STATUS <span class="sort-arrow"></span></th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION BY</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="adm-brg-tbody">
@@ -877,6 +896,41 @@ var editCaller = 'adm';
 var editBrgId = null;
 var delId = null;
 var delCaller = 'adm';
+
+// ── SORT STATUS KOLOM ──
+// Urutan prioritas saat sort ascending: WAIT (perlu aksi) -> DRAFT -> DONE (selesai)
+var STATUS_ORDER = { DRAFT: 1, WAIT: 2, POSTED: 3, DONE: 4 };
+var sortState = { adm_tac: 0, adm_brg: 0, cm_tac: 0, cm_brg: 0 }; // 0=natural, 1=asc, -1=desc
+
+function toggleStatusSort(key) {
+  // cycle: natural(0) -> asc(1) -> desc(-1) -> natural(0)
+  sortState[key] = sortState[key] === 0 ? 1 : (sortState[key] === 1 ? -1 : 0);
+  updateSortHeaderUI(key);
+  if (key === 'adm_tac')      filterTable();
+  else if (key === 'adm_brg') filterADMBRGTable();
+  else if (key === 'cm_tac')  filterCMTable();
+  else if (key === 'cm_brg')  filterBRGTable();
+}
+
+function updateSortHeaderUI(key) {
+  var th = document.getElementById('th-status-' + key);
+  if (!th) return;
+  th.classList.remove('sort-asc', 'sort-desc');
+  if (sortState[key] === 1) th.classList.add('sort-asc');
+  if (sortState[key] === -1) th.classList.add('sort-desc');
+}
+
+function applySortStatus(key, rows) {
+  var dir = sortState[key];
+  if (!dir) return rows;
+  var copy = rows.slice();
+  copy.sort(function(a, b) {
+    var oa = STATUS_ORDER.hasOwnProperty(a.status) ? STATUS_ORDER[a.status] : 99;
+    var ob = STATUS_ORDER.hasOwnProperty(b.status) ? STATUS_ORDER[b.status] : 99;
+    return (oa - ob) * dir;
+  });
+  return copy;
+}
 
 // Status yang mengunci Cellman dari Edit/Hapus (data sudah diproses final oleh Admin)
 var LOCKED_STATUSES_FOR_CELLMAN = ['POSTED'];
@@ -1429,21 +1483,43 @@ async function loadBRGData() {
   brgData = data || [];
   filterBRGTable();
 }
-
+// Terapkan fungsi sort ke data yang difilter
+  cmFilteredRows = applySortStatus('cm_tac', filtered);
+  cmPage = 1;
+  renderCMTablePage();
+}
 function filterBRGTable() {
   var search = (document.getElementById('brg-search').value || '').toLowerCase();
-  var filtered = search
-    ? brgData.filter(r =>
-        (r.nama||'').toLowerCase().includes(search) ||
-        (r.item_desc||'').toLowerCase().includes(search) ||
-        (r.lot_no||'').toLowerCase().includes(search)
-      )
-    : brgData;
-  brgFilteredRows = filtered;
+  var fSt    = document.getElementById('brg-filter') ? document.getElementById('brg-filter').value : '';
+ 
+  var filtered = brgData.filter(function(r) {
+    var ok = !fSt || r.status === fSt;
+    if (search) ok = ok && (
+      (r.nama||'').toLowerCase().includes(search) ||
+      (r.item_desc||'').toLowerCase().includes(search) ||
+      (r.lot_no||'').toLowerCase().includes(search)
+    );
+    return ok;
+  });
+// Terapkan fungsi sort ke data yang difilter
+  brgFilteredRows = applySortStatus('cm_brg', filtered);
   brgPage = 1;
   renderBRGTablePage();
 }
-
+ function filterTable() {
+  var search = (document.getElementById('adm-search').value || '').toLowerCase();
+  var fSt    = document.getElementById('adm-filter').value;
+  
+  var filtered = allData.filter(function(r) {
+    var ok = !fSt || r.status === fSt;
+    if (search) ok = ok && (
+      (r.nama||'').toLowerCase().includes(search) ||
+      (r.item_desc||'').toLowerCase().includes(search) ||
+      (r.lot_no||'').toLowerCase().includes(search) ||
+      (r.note||'').toLowerCase().includes(search)
+    );
+    return ok;
+  }); 
 var brgPage = 1;
 var brgFilteredRows = [];
 
@@ -1519,10 +1595,11 @@ async function loadADMData() {
 var admPage = 1;
 var admFilteredRows = [];
 
-function filterTable() {
-  var search = (document.getElementById('adm-search').value || '').toLowerCase();
-  var fSt    = document.getElementById('adm-filter').value;
-  var filtered = allData.filter(function(r) {
+function filterCMTable() {
+  var search = (document.getElementById('cm-search').value || '').toLowerCase();
+  var fSt    = document.getElementById('cm-filter') ? document.getElementById('cm-filter').value : '';
+  
+  var filtered = cmData.filter(function(r) {
     var ok = !fSt || r.status === fSt;
     if (search) ok = ok && (
       (r.nama||'').toLowerCase().includes(search) ||
@@ -1601,9 +1678,16 @@ async function loadADMBRGData() {
   filterADMBRGTable();
 }
 
+// Terapkan fungsi sort ke data yang difilter
+  admFilteredRows = applySortStatus('adm_tac', filtered);
+  admPage = 1;
+  renderADMTablePage();
+}
+
 function filterADMBRGTable() {
   var search = (document.getElementById('adm-brg-search').value || '').toLowerCase();
   var fSt    = document.getElementById('adm-brg-filter').value;
+  
   var filtered = admBrgData.filter(function(r) {
     var ok = !fSt || r.status === fSt;
     if (search) ok = ok && (
@@ -1614,7 +1698,9 @@ function filterADMBRGTable() {
     );
     return ok;
   });
-  admBrgFilteredRows = filtered;
+  
+  // Terapkan fungsi sort ke data yang difilter
+  admBrgFilteredRows = applySortStatus('adm_brg', filtered);
   admBrgPage = 1;
   renderADMBRGTablePage();
 }
