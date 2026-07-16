@@ -102,7 +102,12 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
 @media (max-width:640px){
   #toast-container{top:8px;right:8px;left:8px;max-width:none;}
 }
-
+/* STATUS SORT/FILTER HEADER */
+.th-status-sort{cursor:pointer;user-select:none;white-space:nowrap;}
+.th-status-sort:hover{background:#222;}
+.th-status-sort.status-th-active{background:#333;}
+.status-th-val{font-size:10px;font-weight:normal;opacity:.85;margin-left:5px;padding:1px 5px;border:1px solid rgba(255,255,255,.4);border-radius:8px;}
+.status-th-icon{font-size:10px;opacity:.6;margin-left:4px;}
 /* NOTIF BADGE on sidebar menu */
 .menu-notif-badge{display:inline-block;background:#c00;color:#fff;font-size:10px;font-weight:bold;border-radius:10px;padding:1px 6px;margin-left:6px;min-width:16px;text-align:center;line-height:1.3;vertical-align:middle;}
 .menu-parent .menu-notif-badge{margin-left:auto;margin-right:6px;}
@@ -341,7 +346,9 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>FROM SUB IO</th>
                 <th>TO SUB IO</th><th>UK MOTIF</th><th>MOTIF</th><th>LOT NO</th>
-               <th>QTY</th><th>NOTE</th><th id="th-status-cm_tac" class="th-sort" onclick="toggleStatusSort('cm_tac')" style="cursor:pointer;user-select:none;">STATUS <span class="sort-arrow"></span></th><th>ACTION BY</th><th>EDIT</th>
+               <th>QTY</th><th>NOTE</th><th id="th-status-cm" class="th-status-sort" onclick="cycleStatusFilter('cm')" title="Klik untuk filter status">
+  STATUS <span class="status-th-val">SEMUA</span><span class="status-th-icon">⇅</span>
+</th></span></th><th>ACTION BY</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="cm-tbody">
@@ -451,7 +458,9 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>SUBINVENTORY</th><th>UK MOTIF</th>
                 <th>MOTIF</th><th>LOT NO</th><th>JML</th>
-                <th>ALASAN</th><th>STATUS</th><th>ALASAN ADMIN</th><th>PENYELESAIAN</th><th>ACTION</th><th>EDIT</th>
+                <th>ALASAN</th><th id="th-status-cm" class="th-status-sort" onclick="cycleStatusFilter('cm')" title="Klik untuk filter status">
+  STATUS <span class="status-th-val">SEMUA</span><span class="status-th-icon">⇅</span>
+</th><th>ALASAN ADMIN</th><th>PENYELESAIAN</th><th>ACTION</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="brg-tbody">
@@ -571,7 +580,9 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>FROM SUB IO</th>
                 <th>TO SUB IO</th><th>UK MOTIF</th><th>ITEM DESC</th><th>LOT NO</th>
-               <th>QTY</th><th>NOTE</th><th id="th-status-adm_tac" class="th-sort" onclick="toggleStatusSort('adm_tac')" style="cursor:pointer;user-select:none;">STATUS <span class="sort-arrow"></span></th><th>ACTION BY</th><th>EDIT</th>
+               <th>QTY</th><th>NOTE</th><th id="th-status-cm" class="th-status-sort" onclick="cycleStatusFilter('cm')" title="Klik untuk filter status">
+  STATUS <span class="status-th-val">SEMUA</span><span class="status-th-icon">⇅</span>
+</th><th>ACTION BY</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="adm-tbody">
@@ -610,7 +621,9 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>SUBINVENTORY</th><th>UK MOTIF</th>
                 <th>ITEM DESC</th><th>LOT NO</th><th>QTY</th>
-               <th>REASON</th><th id="th-status-adm_brg" class="th-sort" onclick="toggleStatusSort('cm_brg')" style="cursor:pointer;user-select:none;">STATUS <span class="sort-arrow"></span></th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION BY</th><th>EDIT</th>
+               <th>REASON</th><th id="th-status-cm" class="th-status-sort" onclick="cycleStatusFilter('cm')" title="Klik untuk filter status">
+  STATUS <span class="status-th-val">SEMUA</span><span class="status-th-icon">⇅</span>
+</th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION BY</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="adm-brg-tbody">
