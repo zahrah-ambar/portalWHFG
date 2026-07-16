@@ -564,7 +564,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <input id="adm-search" type="text" placeholder="cari nama / item / lot..." oninput="filterTable()">
             <button onclick="filterTable()" title="Cari">🔍</button>
           </div>
-          <select id="adm-filter" onchange="filterTable()" style="width:130px;">
+          <select id="adm-filter" onchange="filterTable(); updateStatusHeaderLabel('adm', this.value);">
             <option value="">SEMUA STATUS</option>
             <option value="DRAFT">DRAFT</option>
             <option value="WAIT">WAIT</option>
@@ -988,7 +988,8 @@ async function registerServiceWorker() {
     return null;
   }
 }
-
+// fungsi cycle
+  
 // Subscribe ke Push Manager dan simpan endpoint-nya ke Supabase
 async function subscribeToPush() {
   if (!pushSupported()) return;
@@ -1387,8 +1388,13 @@ var admBrgFilteredRows = [];
 
 function filterCMTable() {
   var search = (document.getElementById('cm-search').value || '').toLowerCase();
-  var filterEl = document.getElementById('cm-filter');
-  var fSt = filterEl ? filterEl.value : '';
+  var filtered = cmData.filter(function(r) {
+    var ok = !cmStatusFilter || r.status === cmStatusFilter;   // ← baris baru
+    if (search) ok = ok && ( /* cek search seperti biasa */ );
+    return ok;
+  });
+  renderCMTable(filtered);
+}
 
   var filtered = cmData.filter(function(r) {
     var ok = !fSt || r.status === fSt;
