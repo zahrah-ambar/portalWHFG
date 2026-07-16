@@ -321,12 +321,13 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <input id="cm-search" type="text" placeholder="cari nama / motif / lot..." oninput="filterCMTable()">
             <button onclick="filterCMTable()" title="Cari">🔍</button>
           </div>
-          <select id="cm-filter" onchange="filterCMTable()">
-    <option value="">SEMUA STATUS</option>
-    <option value="DRAFT">DRAFT</option>
-    <option value="WAIT">WAIT</option>
-    <option value="POSTED">POSTED</option>
-</select>
+          <select id="cm-filter" onchange="filterCMTable()" style="width:130px;">
+            <option value="">SEMUA STATUS</option>
+            <option value="DRAFT">DRAFT</option>
+            <option value="WAIT">WAIT</option>
+            <option value="POSTED">POSTED</option>
+            <option value="DONE">DONE</option>
+          </select>
           <button onclick="loadCMData()" class="outline" style="font-size:12px;">↺ REFRESH</button>
         </div>
         <div style="overflow-x:auto;">
@@ -349,7 +350,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
           <button onclick="cmGoToPage(1)" class="outline">>></button>
         </div>
       </div>
-      
+
       <!-- FORM BARANG BERMASALAH (CELLMAN) -->
       <div id="cm-page-form-brg" style="display:none;">
         <h2>INPUT FORM BARANG BERMASALAH</h2>
@@ -428,15 +429,15 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
         <div class="toolbar">
           <div class="search-wrap">
             <input id="brg-search" type="text" placeholder="cari nama / item / lot..." oninput="filterBRGTable()">
-            <select id="cm-filter" onchange="filterCMTable()">
+            <button onclick="filterBRGTable()" title="Cari">🔍</button>
+          </div>
+          <select id="brg-filter" onchange="filterBRGTable()" style="width:130px;">
             <option value="">SEMUA STATUS</option>
             <option value="DRAFT">DRAFT</option>
             <option value="WAIT">WAIT</option>
             <option value="POSTED">POSTED</option>
-            </select>
-            <button onclick="filterBRGTable()" title="Cari">🔍</button>
-          </div>
-          
+            <option value="DONE">DONE</option>
+          </select>
           <button onclick="loadBRGData()" class="outline" style="font-size:12px;">↺ REFRESH</button>
         </div>
         <div style="overflow-x:auto;">
@@ -1321,36 +1322,23 @@ var cmPage = 1;
 var cmFilteredRows = [];
 
 function filterCMTable() {
-
   var search = (document.getElementById('cm-search').value || '').toLowerCase();
-  var fSt    = document.getElementById('cm-filter').value;
-
-  var filtered = cmData.filter(function(r){
-
+  var fSt = document.getElementById('cm-filter').value;
+  
+  var filtered = cmData.filter(function(r) {
     var ok = !fSt || r.status === fSt;
-
-    if(search){
-      ok = ok && (
-
-        (r.nama||'').toLowerCase().includes(search) ||
-
-        (r.item_desc||'').toLowerCase().includes(search) ||
-
-        (r.lot_no||'').toLowerCase().includes(search) ||
-
-        (r.note||'').toLowerCase().includes(search)
-
-      );
-    }
-
+    if (search) ok = ok && (
+      (r.nama||'').toLowerCase().includes(search) ||
+      (r.item_desc||'').toLowerCase().includes(search) ||
+      (r.lot_no||'').toLowerCase().includes(search) ||
+      (r.note||'').toLowerCase().includes(search)
+    );
     return ok;
-
   });
-
+  
   cmFilteredRows = filtered;
   cmPage = 1;
   renderCMTablePage();
-
 }
 
 function cmGoToPage(delta) {
@@ -1462,37 +1450,24 @@ async function loadBRGData() {
 }
 
 function filterBRGTable() {
-
   var search = (document.getElementById('brg-search').value || '').toLowerCase();
-  var fSt    = document.getElementById('brg-filter').value;
-
-  var filtered = brgData.filter(function(r){
-
+  var fSt = document.getElementById('brg-filter').value;
+  
+  var filtered = brgData.filter(function(r) {
     var ok = !fSt || r.status === fSt;
-
-    if(search){
-      ok = ok && (
-
-        (r.nama||'').toLowerCase().includes(search) ||
-
-        (r.item_desc||'').toLowerCase().includes(search) ||
-
-        (r.lot_no||'').toLowerCase().includes(search) ||
-
-        (r.note||'').toLowerCase().includes(search)
-
-      );
-    }
-
+    if (search) ok = ok && (
+      (r.nama||'').toLowerCase().includes(search) ||
+      (r.item_desc||'').toLowerCase().includes(search) ||
+      (r.lot_no||'').toLowerCase().includes(search)
+    );
     return ok;
-
   });
-
+  
   brgFilteredRows = filtered;
   brgPage = 1;
   renderBRGTablePage();
-
 }
+
 var brgPage = 1;
 var brgFilteredRows = [];
 
