@@ -43,6 +43,7 @@ tr:hover td{background:#f5f5f5;}
 .btn-icon.del:hover{background:#fff0f0;border-color:#c00;}
 .btn-icon.edt:hover{background:#f0f4ff;border-color:#336;}
 .act-cell{display:flex;gap:4px;align-items:center;}
+.act-locked{font-size:12px;color:#999;font-style:italic;}
 .layout{display:flex;flex:1;overflow:hidden;}
 .sidebar{width:190px;flex-shrink:0;background:#111;color:#fff;display:flex;flex-direction:column;transition:width .25s ease;overflow:hidden;}
 .sidebar.closed{width:0;}
@@ -64,6 +65,14 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
 .filter-row .fgroup{margin-bottom:0;min-width:140px;}
 .opt-label{font-weight:normal;color:#888;font-size:11px;}
 .toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
+.pager{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:12px;font-size:13px;}
+.pager button{padding:5px 12px;font-size:12px;}
+.pager button:disabled{opacity:.35;cursor:not-allowed;}
+.pager span{min-width:50px;text-align:center;font-weight:bold;}
+@media (max-width:640px){
+  .pager{flex-wrap:wrap;gap:8px;}
+  .pager button{flex:1;min-width:110px;}
+}
 .search-wrap{display:flex;gap:0;flex:1;min-width:180px;max-width:340px;}
 .search-wrap input{border-right:none;border-radius:0;}
 .search-wrap button{border-radius:0;padding:6px 12px;white-space:nowrap;flex-shrink:0;}
@@ -94,47 +103,14 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
 .menu-notif-badge{display:inline-block;background:#c00;color:#fff;font-size:10px;font-weight:bold;border-radius:10px;padding:1px 6px;margin-left:6px;min-width:16px;text-align:center;line-height:1.3;vertical-align:middle;}
 .menu-parent .menu-notif-badge{margin-left:auto;margin-right:6px;}
 
-/* INBOX NOTIFIKASI (topbar) */
-.inbox-wrap{position:relative;}
-.inbox-btn{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:4px 7px;position:relative;line-height:1;}
-.inbox-btn:hover{opacity:.8;}
-.inbox-count{position:absolute;top:-3px;right:0px;background:#c00;color:#fff;font-size:10px;font-weight:bold;border-radius:10px;padding:1px 5px;min-width:15px;text-align:center;line-height:1.3;border:1px solid #000;}
-.inbox-panel{display:none;flex-direction:column;position:absolute;top:calc(100% + 8px);right:0;width:320px;max-width:90vw;background:#fff;color:#000;border:1px solid #000;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:400;max-height:420px;}
-.inbox-panel.open{display:flex;}
-.inbox-head{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid #ddd;font-size:13px;font-weight:bold;flex-shrink:0;}
-.inbox-head button{background:none;border:none;color:#336;font-size:11px;font-weight:normal;cursor:pointer;padding:2px 4px;}
-.inbox-head button:hover{text-decoration:underline;}
-.inbox-list{overflow-y:auto;flex:1;}
-.inbox-item{display:flex;gap:8px;padding:10px 12px;border-bottom:1px solid #eee;cursor:pointer;align-items:flex-start;}
-.inbox-item:hover{background:#f7f7f7;}
-.inbox-item.unread{background:#f0f4ff;}
-.inbox-item.unread:hover{background:#e6ecff;}
-.inbox-item .ii-icon{font-size:16px;flex-shrink:0;}
-.inbox-item .ii-body{flex:1;min-width:0;}
-.inbox-item .ii-title{font-size:12.5px;font-weight:bold;}
-.inbox-item .ii-desc{font-size:11.5px;color:#555;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.inbox-item .ii-time{font-size:10px;color:#999;margin-top:2px;}
-.inbox-item .ii-dot{width:7px;height:7px;border-radius:50%;background:#c00;flex-shrink:0;margin-top:4px;}
-.inbox-empty{padding:30px 12px;text-align:center;color:#999;font-size:12px;}
-
-/* STATUS SORT/FILTER HEADER */
-.th-status-sort{cursor:pointer;user-select:none;white-space:nowrap;}
-.th-status-sort:hover{background:#222;}
-.th-status-sort.status-th-active{background:#333;}
-.status-th-val{font-size:10px;font-weight:normal;opacity:.85;margin-left:5px;padding:1px 5px;border:1px solid rgba(255,255,255,.4);border-radius:8px;}
-.status-th-icon{font-size:10px;opacity:.6;margin-left:4px;}
-
-/* PAGINATION BAR */
-.pg-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap;}
-.pg-info{font-size:12px;color:#555;}
-.pg-bar button{font-size:12px;padding:6px 14px;}
-@media (max-width:640px){
-  .pg-bar{justify-content:center;}
-  .pg-info{order:3;width:100%;text-align:center;margin-top:4px;}
-}
-@media (max-width:640px){
-  .inbox-panel{position:fixed;top:50px;right:8px;left:8px;width:auto;max-width:none;max-height:70vh;}
-}
+/* NOTIF PERMISSION BANNER */
+.notif-banner{display:none;align-items:center;justify-content:space-between;gap:10px;background:#fff8e1;border:1px solid #e0c04a;padding:8px 12px;font-size:12px;margin:0 0 12px;flex-wrap:wrap;}
+.notif-banner.show{display:flex;}
+.notif-banner span{flex:1;min-width:180px;}
+.notif-banner button{padding:5px 10px;font-size:12px;}
+.notif-status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;}
+.notif-status-dot.on{background:#2a7;}
+.notif-status-dot.off{background:#c00;}
 
 @media (max-width: 640px) {
   .sidebar{position:fixed;top:0;left:0;height:100vh;z-index:200;width:0;transition:width .25s ease;}
@@ -198,6 +174,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
     </div>
     <button id="btn-login" onclick="doLogin()" style="width:100%;margin-top:4px">MASUK</button>
     <div id="l-err"></div>
+    <div id="l-restoring" style="display:none;text-align:center;margin-top:14px;font-size:12px;color:#555;">⏳ Memeriksa sesi login...</div>
   </div>
 </div>
 
@@ -211,13 +188,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
       <strong>TAC SYSTEM</strong>
     </div>
     <div class="topbar-right">
-      <div class="inbox-wrap">
-        <button class="inbox-btn" onclick="toggleInbox('cm')" title="Notifikasi">📬<span class="inbox-count" id="cm-inbox-count" style="display:none;">0</span></button>
-        <div class="inbox-panel" id="cm-inbox-panel">
-          <div class="inbox-head"><span>📬 NOTIFIKASI</span><button onclick="markAllReadInbox('cm')">Tandai semua dibaca</button></div>
-          <div class="inbox-list" id="cm-inbox-list"><div class="inbox-empty">— belum ada notifikasi —</div></div>
-        </div>
-      </div>
+      <button onclick="toggleNotifPanelInfo()" id="cm-notif-bell" title="Status notifikasi" style="padding:4px 8px;font-size:14px;background:transparent;border:none;color:#fff;cursor:pointer;">🔔</button>
       <span id="cm-name-label" style="font-size:12px;opacity:.7;"></span>
       <button onclick="doLogout()" style="padding:4px 10px;font-size:12px;">KELUAR</button>
     </div>
@@ -249,6 +220,11 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
       </ul>
     </div>
     <div class="main-content">
+
+      <div class="notif-banner" id="cm-notif-banner">
+        <span><span class="notif-status-dot off" id="cm-notif-dot"></span><span id="cm-notif-text">Aktifkan notifikasi HP agar Anda mendapat pemberitahuan saat Admin memproses data Anda.</span></span>
+        <button onclick="requestNotifPermission()">AKTIFKAN</button>
+      </div>
 
       <!-- FORM TAC -->
       <div id="cm-page-form-tac">
@@ -308,7 +284,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
         <div class="row">
           <div class="col">
             <div class="fgroup">
-              <label class="flabel">ITEM DESC *</label>
+              <label class="flabel">MOTIF *</label>
               <input type="text" id="cm-item" placeholder="nama item">
             </div>
           </div>
@@ -320,7 +296,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
           </div>
           <div class="col">
             <div class="fgroup">
-              <label class="flabel">QTY *</label>
+              <label class="flabel">JUMLAH *</label>
               <input type="number" id="cm-qty" placeholder="0" min="0">
             </div>
           </div>
@@ -328,21 +304,21 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
         <div class="row">
           <div class="col" style="max-width:400px;">
             <div class="fgroup">
-              <label class="flabel">NOTE *</label>
+              <label class="flabel">CATATAN *</label>
               <input type="text" id="cm-note" placeholder="isi keterangan...">
             </div>
           </div>
         </div>
         <div style="display:flex;gap:8px;margin-top:4px;">
-          <button id="btn-cm-submit" onclick="submitTAC()">SEND</button>
-          <button onclick="clearCMForm()" class="outline">DELETE</button>
+          <button id="btn-cm-submit" onclick="submitTAC()">KIRIM</button>
+          <button onclick="clearCMForm()" class="outline">HAPUS</button>
         </div>
         <div id="cm-msg"></div>
 
-        <h2 style="margin-top:24px;">HISTORY</h2>
+        <h2 style="margin-top:24px;">RIWAYAT</h2>
         <div class="toolbar">
           <div class="search-wrap">
-            <input id="cm-search" type="text" placeholder="cari nama / item / lot..." oninput="filterCMTable()">
+            <input id="cm-search" type="text" placeholder="cari nama / motif / lot..." oninput="filterCMTable()">
             <button onclick="filterCMTable()" title="Cari">🔍</button>
           </div>
           <button onclick="loadCMData()" class="outline" style="font-size:12px;">↺ REFRESH</button>
@@ -352,10 +328,8 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <thead>
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>FROM SUB IO</th>
-                <th>TO SUB IO</th><th>UK MOTIF</th><th>ITEM DESC</th><th>LOT NO</th>
-                <th>QTY</th><th>NOTE</th>
-                <th id="th-status-cm" class="th-status-sort" onclick="cycleStatusFilter('cm')" title="Klik untuk filter status">STATUS <span class="status-th-val">SEMUA</span><span class="status-th-icon">⇅</span></th>
-                <th>ACTION BY</th><th>EDIT</th>
+                <th>TO SUB IO</th><th>UK MOTIF</th><th>MOTIF</th><th>LOT NO</th>
+                <th>QTY</th><th>CATATAN</th><th>STATUS</th><th>ACTION</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="cm-tbody">
@@ -363,10 +337,10 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             </tbody>
           </table>
         </div>
-        <div class="pg-bar">
-          <button id="pg-prev-cm" onclick="changePage('cm',-1)" class="outline">‹<<</button>
-          <span id="pg-info-cm" class="pg-info">Halaman 1 / 1</span>
-          <button id="pg-next-cm" onclick="changePage('cm',1)" class="outline">>>›</button>
+        <div class="pager" id="cm-pager">
+          <button onclick="cmGoToPage(-1)" class="outline"><<</button>
+          <span id="cm-pager-info">1 / 1</span>
+          <button onclick="cmGoToPage(1)" class="outline">>></button>
         </div>
       </div>
 
@@ -413,7 +387,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
         <div class="row">
           <div class="col">
             <div class="fgroup">
-              <label class="flabel">ITEM DESC *</label>
+              <label class="flabel">MOTIF *</label>
               <input type="text" id="brg-item" placeholder="nama item">
             </div>
           </div>
@@ -425,7 +399,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
           </div>
           <div class="col">
             <div class="fgroup">
-              <label class="flabel">QTY *</label>
+              <label class="flabel">JUMLAH *</label>
               <input type="number" id="brg-qty" placeholder="0" min="0">
             </div>
           </div>
@@ -433,14 +407,14 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
         <div class="row">
           <div class="col" style="max-width:400px;">
             <div class="fgroup">
-              <label class="flabel">REASON *</label>
+              <label class="flabel">ALASAN *</label>
               <input type="text" id="brg-note" placeholder="alasan barang bermasalah...">
             </div>
           </div>
         </div>
         <div style="display:flex;gap:8px;margin-top:4px;">
-          <button id="btn-brg-submit" onclick="submitBRG()">SEND</button>
-          <button onclick="clearBRGForm()" class="outline">DELETE</button>
+          <button id="btn-brg-submit" onclick="submitBRG()">KIRIM</button>
+          <button onclick="clearBRGForm()" class="outline">HAPUS</button>
         </div>
         <div id="brg-msg"></div>
 
@@ -457,10 +431,8 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <thead>
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>SUBINVENTORY</th><th>UK MOTIF</th>
-                <th>ITEM DESC</th><th>LOT NO</th><th>QTY</th>
-                <th>REASON</th>
-                <th id="th-status-brg" class="th-status-sort" onclick="cycleStatusFilter('brg')" title="Klik untuk filter status">STATUS <span class="status-th-val">SEMUA</span><span class="status-th-icon">⇅</span></th>
-                <th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION BY</th><th>EDIT</th>
+                <th>MOTIF</th><th>LOT NO</th><th>JML</th>
+                <th>ALASAN</th><th>STATUS</th><th>ALASAN ADMIN</th><th>PENYELESAIAN</th><th>ACTION</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="brg-tbody">
@@ -468,10 +440,10 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             </tbody>
           </table>
         </div>
-        <div class="pg-bar">
-          <button id="pg-prev-brg" onclick="changePage('brg',-1)" class="outline">‹ SEBELUMNYA</button>
-          <span id="pg-info-brg" class="pg-info">Halaman 1 / 1</span>
-          <button id="pg-next-brg" onclick="changePage('brg',1)" class="outline">SELANJUTNYA ›</button>
+        <div class="pager" id="brg-pager">
+          <button onclick="brgGoToPage(-1)" class="outline"><<</button>
+          <span id="brg-pager-info">1 / 1</span>
+          <button onclick="brgGoToPage(1)" class="outline">>></button>
         </div>
       </div>
 
@@ -518,13 +490,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
       <strong>TAC SYSTEM — ADMIN</strong>
     </div>
     <div class="topbar-right">
-      <div class="inbox-wrap">
-        <button class="inbox-btn" onclick="toggleInbox('adm')" title="Notifikasi">📬<span class="inbox-count" id="adm-inbox-count" style="display:none;">0</span></button>
-        <div class="inbox-panel" id="adm-inbox-panel">
-          <div class="inbox-head"><span>📬 NOTIFIKASI</span><button onclick="markAllReadInbox('adm')">Tandai semua dibaca</button></div>
-          <div class="inbox-list" id="adm-inbox-list"><div class="inbox-empty">— belum ada notifikasi —</div></div>
-        </div>
-      </div>
+      <button onclick="toggleNotifPanelInfo()" id="adm-notif-bell" title="Status notifikasi" style="padding:4px 8px;font-size:14px;background:transparent;border:none;color:#fff;cursor:pointer;">🔔</button>
       <span id="adm-email-label" style="font-size:12px;opacity:.7;"></span>
       <button onclick="doLogout()" style="padding:4px 10px;font-size:12px;">KELUAR</button>
     </div>
@@ -557,6 +523,11 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
     </div>
     <div class="main-content">
 
+      <div class="notif-banner" id="adm-notif-banner">
+        <span><span class="notif-status-dot off" id="adm-notif-dot"></span><span id="adm-notif-text">Aktifkan notifikasi HP agar Anda langsung tahu saat ada TAC / Barang Bermasalah baru.</span></span>
+        <button onclick="requestNotifPermission()">AKTIFKAN</button>
+      </div>
+
       <!-- DATA TAC (ADMIN) -->
       <div id="adm-page-data-tac">
         <h2>DATA TAC</h2>
@@ -565,10 +536,11 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <input id="adm-search" type="text" placeholder="cari nama / item / lot..." oninput="filterTable()">
             <button onclick="filterTable()" title="Cari">🔍</button>
           </div>
-          <select id="adm-filter" onchange="filterTable(); updateStatusHeaderLabel('adm', this.value);" style="width:130px;">
+          <select id="adm-filter" onchange="filterTable()" style="width:130px;">
             <option value="">SEMUA STATUS</option>
             <option value="DRAFT">DRAFT</option>
             <option value="WAIT">WAIT</option>
+            <option value="POSTED">POSTED</option>
             <option value="DONE">DONE</option>
           </select>
           <button onclick="loadADMData()" class="outline" style="font-size:12px;">↺ REFRESH</button>
@@ -579,10 +551,8 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <thead>
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>FROM SUB IO</th>
-                <th>TO SUB IO</th><th>UK MOTIF</th><th>ITEM DESC</th><th>LOT NO</th>
-                <th>QTY</th><th>NOTE</th>
-                <th id="th-status-adm" class="th-status-sort" onclick="cycleStatusFilter('adm')" title="Klik untuk filter status">STATUS <span class="status-th-val">SEMUA</span><span class="status-th-icon">⇅</span></th>
-                <th>ACTION BY</th><th>EDIT</th>
+                <th>TO SUB IO</th><th>UK MOTIF</th><th>MOTIF</th><th>LOT NO</th>
+                <th>QTY</th><th>NOTE</th><th>STATUS</th><th>ACTION</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="adm-tbody">
@@ -590,10 +560,10 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             </tbody>
           </table>
         </div>
-        <div class="pg-bar">
-          <button id="pg-prev-adm" onclick="changePage('adm',-1)" class="outline">‹ SEBELUMNYA</button>
-          <span id="pg-info-adm" class="pg-info">Halaman 1 / 1</span>
-          <button id="pg-next-adm" onclick="changePage('adm',1)" class="outline">SELANJUTNYA ›</button>
+        <div class="pager" id="adm-pager">
+          <button onclick="admGoToPage(-1)" class="outline"><<</button>
+          <span id="adm-pager-info">1 / 1</span>
+          <button onclick="admGoToPage(1)" class="outline">>></button>
         </div>
       </div>
 
@@ -606,9 +576,10 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <button onclick="filterADMBRGTable()" title="Cari">🔍</button>
           </div>
           <select id="adm-brg-filter" onchange="filterADMBRGTable(); updateStatusHeaderLabel('adm-brg', this.value);" style="width:130px;">
-            <option value="">SEMUA STATUS</option>
+    <option value="">SEMUA STATUS</option>
             <option value="DRAFT">DRAFT</option>
             <option value="WAIT">WAIT</option>
+            <option value="POSTED">POSTED</option>
             <option value="DONE">DONE</option>
           </select>
           <button onclick="loadADMBRGData()" class="outline" style="font-size:12px;">↺ REFRESH</button>
@@ -619,10 +590,8 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <thead>
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>SUBINVENTORY</th><th>UK MOTIF</th>
-                <th>ITEM DESC</th><th>LOT NO</th><th>QTY</th>
-                <th>REASON</th>
-                <th id="th-status-adm-brg" class="th-status-sort" onclick="cycleStatusFilter('adm-brg')" title="Klik untuk filter status">STATUS <span class="status-th-val">SEMUA</span><span class="status-th-icon">⇅</span></th>
-                <th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION BY</th><th>EDIT</th>
+                <th>MOTIF</th><th>LOT NO</th><th>QTY</th>
+                <th>REASON</th><th>STATUS</th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="adm-brg-tbody">
@@ -630,10 +599,10 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             </tbody>
           </table>
         </div>
-        <div class="pg-bar">
-          <button id="pg-prev-adm-brg" onclick="changePage('adm-brg',-1)" class="outline">‹ SEBELUMNYA</button>
-          <span id="pg-info-adm-brg" class="pg-info">Halaman 1 / 1</span>
-          <button id="pg-next-adm-brg" onclick="changePage('adm-brg',1)" class="outline">SELANJUTNYA ›</button>
+        <div class="pager" id="adm-brg-pager">
+          <button onclick="admBrgGoToPage(-1)" class="outline"><<</button>
+          <span id="adm-brg-pager-info">1 / 1</span>
+          <button onclick="admBrgGoToPage(1)" class="outline">>></button>
         </div>
       </div>
 
@@ -651,6 +620,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <select id="adm-rep-status" style="width:130px;">
                 <option value="">SEMUA</option>
                 <option value="DRAFT">DRAFT</option><option value="WAIT">WAIT</option>
+                <option value="POSTED">POSTED</option>
                 <option value="DONE">DONE</option>
               </select>
             </div>
@@ -674,6 +644,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <select id="adm-brg-rep-status" style="width:130px;">
                 <option value="">SEMUA</option>
                 <option value="DRAFT">DRAFT</option><option value="WAIT">WAIT</option>
+                <option value="POSTED">POSTED</option>
                 <option value="DONE">DONE</option>
               </select>
             </div>
@@ -739,7 +710,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <div class="fgroup" style="flex:1;min-width:140px;">
-        <label class="flabel">ITEM DESC</label>
+        <label class="flabel">MOTIF</label>
         <input type="text" id="me-item">
       </div>
       <div class="fgroup" style="flex:1;min-width:100px;">
@@ -761,6 +732,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
         <select id="me-status">
           <option value="DRAFT">DRAFT</option>
           <option value="WAIT">WAIT</option>
+          <option value="POSTED">POSTED</option>
           <option value="DONE">DONE</option>
         </select>
       </div>
@@ -768,7 +740,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
     <!-- ACTION BY — selalu tampil; readonly saat Cellman, editable saat Admin -->
     <div style="display:flex;gap:10px;flex-wrap:wrap;" id="me-actionby-wrap">
       <div class="fgroup" style="flex:1;min-width:200px;">
-        <label class="flabel" id="me-action-by-label">ACTION BY</label>
+        <label class="flabel" id="me-action-by-label">ACTION</label>
         <input type="text" id="me-action-by" placeholder="—">
         <div class="readonly-info" id="me-action-by-hint" style="display:none;">Diisi oleh Admin — tidak dapat diubah</div>
       </div>
@@ -819,7 +791,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <div class="fgroup" style="flex:1;min-width:140px;">
-        <label class="flabel">ITEM DESC</label>
+        <label class="flabel">MOTIF</label>
         <input type="text" id="mbrg-item">
       </div>
       <div class="fgroup" style="flex:1;min-width:100px;">
@@ -841,14 +813,20 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
         <select id="mbrg-status">
           <option value="DRAFT">DRAFT</option>
           <option value="WAIT">WAIT</option>
+          <option value="POSTED">POSTED</option>
           <option value="DONE">DONE</option>
         </select>
       </div>
     </div>
+    <!-- REASON ADMIN — hanya tampil & bisa diisi saat Admin yang edit -->
+    <div class="fgroup" id="mbrg-reason-admin-wrap" style="display:none;">
+      <label class="flabel">REASON ADMIN</label>
+      <input type="text" id="mbrg-reason-admin" placeholder="alasan / catatan dari admin...">
+    </div>
     <!-- ACTION BY — selalu tampil; readonly saat Cellman, editable saat Admin -->
     <div style="display:flex;gap:10px;flex-wrap:wrap;" id="mbrg-actionby-wrap">
       <div class="fgroup" style="flex:1;min-width:200px;">
-        <label class="flabel" id="mbrg-action-by-label">ACTION BY</label>
+        <label class="flabel" id="mbrg-action-by-label">ACTION</label>
         <input type="text" id="mbrg-action-by" placeholder="—">
         <div class="readonly-info" id="mbrg-action-by-hint" style="display:none;">Diisi oleh Admin — tidak dapat diubah</div>
       </div>
@@ -877,7 +855,16 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
 const SUPA_URL = 'https://eyqgrwfigistgiddsypi.supabase.co';
 const SUPA_KEY = 'sb_publishable_E9-SgMtkL9NlfAYRl0uiXA_n2GQU30I';
 const { createClient } = supabase;
-const db = createClient(SUPA_URL, SUPA_KEY);
+const db = createClient(SUPA_URL, SUPA_KEY, {
+  auth: {
+    persistSession: true,     // simpan sesi login di localStorage browser
+    autoRefreshToken: true,   // perpanjang otomatis sebelum token kedaluwarsa
+    detectSessionInUrl: false
+  }
+});
+
+// VAPID public key untuk Web Push (private key disimpan di server/Supabase Edge Function, TIDAK di sini)
+const VAPID_PUBLIC_KEY = 'BP6VbY5iMIlT8RIjST1MpY12JZoFkqesqZaoQ3qz825LXGvNJQFEhehIgkn6garLREqlxe55XvEjwjhB3Nqhfrw';
 
 var role = 'cellman';
 var currentUser = null;
@@ -891,80 +878,171 @@ var editBrgId = null;
 var delId = null;
 var delCaller = 'adm';
 
+// Status yang mengunci Cellman dari Edit/Hapus (data sudah diproses final oleh Admin)
+var LOCKED_STATUSES_FOR_CELLMAN = ['POSTED'];
+
 // ── REALTIME & NOTIFIKASI ──
 var rtChannel = null;
 var badgeCounts = { 'cm-tac':0, 'cm-brg':0, 'adm-tac':0, 'adm-brg':0 };
 
-// ── STATUS SORT/FILTER (klik header STATUS) ──
-var cmStatusFilter = '';
-var brgStatusFilter = '';
-var statusCycleOrder = ['', 'DRAFT', 'WAIT', 'DONE'];
+// ── NOTIFIKASI HP: Notification API (tab terbuka) + Web Push (app ditutup) ──
+var NOTIF_ICON = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4e6.png';
 
-// ── PAGINATION (10 baris per halaman) ──
-var PAGE_SIZE = 10;
-var pageState = { cm:1, brg:1, adm:1, 'adm-brg':1 };
-var filteredCache = { cm:[], brg:[], adm:[], 'adm-brg':[] };
+var swRegistration = null;
 
-function changePage(scope, delta) {
-  var totalPages = Math.max(1, Math.ceil(filteredCache[scope].length / PAGE_SIZE));
-  var newPage = pageState[scope] + delta;
-  if (newPage < 1 || newPage > totalPages) return;
-  pageState[scope] = newPage;
-  renderPagedTable(scope);
+function notifSupported() {
+  return ('Notification' in window);
 }
 
-function updatePaginationUI(scope, current, total, count) {
-  var info = document.getElementById('pg-info-' + scope);
-  if (info) info.textContent = 'Halaman ' + current + ' / ' + total + ' (' + count + ' data)';
-  var prevBtn = document.getElementById('pg-prev-' + scope);
-  var nextBtn = document.getElementById('pg-next-' + scope);
-  if (prevBtn) prevBtn.disabled = current <= 1;
-  if (nextBtn) nextBtn.disabled = current >= total;
+function pushSupported() {
+  return ('serviceWorker' in navigator) && ('PushManager' in window);
 }
 
-function renderPagedTable(scope) {
-  var filtered = filteredCache[scope];
-  var totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  if (pageState[scope] > totalPages) pageState[scope] = totalPages;
-  var start = (pageState[scope] - 1) * PAGE_SIZE;
-  var pageRows = filtered.slice(start, start + PAGE_SIZE);
-  if (scope === 'cm')            renderCMTable(pageRows, start);
-  else if (scope === 'brg')      renderBRGTable(pageRows, 'brg-tbody', 'cm', start);
-  else if (scope === 'adm')      renderADMTable(pageRows, start);
-  else if (scope === 'adm-brg')  renderBRGTable(pageRows, 'adm-brg-tbody', 'adm', start);
-  updatePaginationUI(scope, pageState[scope], totalPages, filtered.length);
-}
-
-function cycleStatusFilter(scope) {
-  var next;
-  if (scope === 'cm') {
-    next = statusCycleOrder[(statusCycleOrder.indexOf(cmStatusFilter) + 1) % statusCycleOrder.length];
-    cmStatusFilter = next;
-    filterCMTable();
-  } else if (scope === 'brg') {
-    next = statusCycleOrder[(statusCycleOrder.indexOf(brgStatusFilter) + 1) % statusCycleOrder.length];
-    brgStatusFilter = next;
-    filterBRGTable();
-  } else if (scope === 'adm') {
-    var sel = document.getElementById('adm-filter');
-    next = statusCycleOrder[(statusCycleOrder.indexOf(sel.value) + 1) % statusCycleOrder.length];
-    sel.value = next;
-    filterTable();
-  } else if (scope === 'adm-brg') {
-    var sel2 = document.getElementById('adm-brg-filter');
-    next = statusCycleOrder[(statusCycleOrder.indexOf(sel2.value) + 1) % statusCycleOrder.length];
-    sel2.value = next;
-    filterADMBRGTable();
+// Ubah base64 VAPID key jadi Uint8Array (format yang diminta PushManager)
+function urlBase64ToUint8Array(base64String) {
+  var padding = '='.repeat((4 - base64String.length % 4) % 4);
+  var base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  var rawData = atob(base64);
+  var outputArray = new Uint8Array(rawData.length);
+  for (var i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
   }
-  updateStatusHeaderLabel(scope, next);
+  return outputArray;
 }
 
-function updateStatusHeaderLabel(scope, val) {
-  var th = document.getElementById('th-status-' + scope);
-  if (!th) return;
-  var lab = th.querySelector('.status-th-val');
-  if (lab) lab.textContent = val || 'SEMUA';
-  th.classList.toggle('status-th-active', !!val);
+// Daftarkan service worker sekali saat halaman load (tidak perlu izin dulu)
+async function registerServiceWorker() {
+  if (!pushSupported()) return null;
+  try {
+    swRegistration = await navigator.serviceWorker.register('/service-worker.js');
+    return swRegistration;
+  } catch(e) {
+    console.error('Gagal daftar service worker:', e);
+    return null;
+  }
+}
+
+// Subscribe ke Push Manager dan simpan endpoint-nya ke Supabase
+async function subscribeToPush() {
+  if (!pushSupported()) return;
+  if (!swRegistration) swRegistration = await registerServiceWorker();
+  if (!swRegistration) return;
+
+  try {
+    var existing = await swRegistration.pushManager.getSubscription();
+    var sub = existing || await swRegistration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+    });
+
+    var json = sub.toJSON();
+    var email = currentUser ? currentUser.email : '';
+    if (!email) return;
+
+    await db.from('push_subscriptions').upsert({
+      user_email : email,
+      role       : isAdminEmail(email) ? 'admin' : 'cellman',
+      endpoint   : json.endpoint,
+      p256dh     : json.keys.p256dh,
+      auth       : json.keys.auth
+    }, { onConflict: 'endpoint' });
+
+  } catch(e) {
+    console.error('Gagal subscribe push:', e);
+  }
+}
+
+// Hapus subscription (dipanggil saat logout, supaya device lama tidak terus dikirimi push)
+async function unsubscribeFromPush() {
+  if (!swRegistration) return;
+  try {
+    var sub = await swRegistration.pushManager.getSubscription();
+    if (sub) {
+      await db.from('push_subscriptions').delete().eq('endpoint', sub.endpoint);
+      await sub.unsubscribe();
+    }
+  } catch(e) {
+    console.error('Gagal unsubscribe push:', e);
+  }
+}
+
+// Update tampilan banner + titik status sesuai izin saat ini
+function refreshNotifUI() {
+  if (!notifSupported()) return;
+  var perm = Notification.permission; // 'default' | 'granted' | 'denied'
+  ['cm', 'adm'].forEach(function(prefix) {
+    var banner = document.getElementById(prefix + '-notif-banner');
+    var dot    = document.getElementById(prefix + '-notif-dot');
+    var text   = document.getElementById(prefix + '-notif-text');
+    if (!banner) return;
+    if (perm === 'granted') {
+      banner.classList.remove('show');
+      if (dot)  dot.className = 'notif-status-dot on';
+    } else if (perm === 'denied') {
+      banner.classList.add('show');
+      banner.querySelector('button').style.display = 'none';
+      if (text) text.textContent = 'Notifikasi diblokir browser. Aktifkan lewat pengaturan situs (izin notifikasi) lalu refresh halaman.';
+      if (dot)  dot.className = 'notif-status-dot off';
+    } else {
+      banner.classList.add('show');
+      var btn = banner.querySelector('button');
+      if (btn) btn.style.display = '';
+      if (dot) dot.className = 'notif-status-dot off';
+    }
+  });
+}
+
+// Diklik dari tombol lonceng 🔔 di topbar — cuma info singkat
+function toggleNotifPanelInfo() {
+  if (!notifSupported()) { alert('Browser ini tidak mendukung notifikasi.'); return; }
+  var perm = Notification.permission;
+  if (perm === 'granted') {
+    alert('🔔 Notifikasi AKTIF. Anda akan menerima notifikasi HP untuk update terbaru — bahkan saat aplikasi/tab ini ditutup.');
+  } else if (perm === 'denied') {
+    alert('🔕 Notifikasi DIBLOKIR. Buka pengaturan situs di browser Anda, izinkan Notification untuk situs ini, lalu refresh halaman.');
+  } else {
+    requestNotifPermission();
+  }
+}
+
+async function requestNotifPermission() {
+  if (!notifSupported()) { alert('Browser ini tidak mendukung notifikasi.'); return; }
+  try {
+    var result = await Notification.requestPermission();
+    refreshNotifUI();
+    if (result === 'granted') {
+      sendNativeNotification('🔔 Notifikasi Aktif', 'TAC SYSTEM akan mengirim notifikasi ke HP Anda, bahkan saat app ditutup.');
+      // Daftarkan push subscription agar notifikasi tetap jalan walau tab ditutup
+      await subscribeToPush();
+    }
+  } catch(e) {
+    console.error('Gagal minta izin notifikasi:', e);
+  }
+}
+
+// Kirim notifikasi ke layar HP/desktop (muncul di tray notifikasi OS)
+function sendNativeNotification(title, body) {
+  if (!notifSupported()) return;
+  if (Notification.permission !== 'granted') return;
+  try {
+    var n = new Notification(title, {
+      body: body || '',
+      icon: NOTIF_ICON,
+      badge: NOTIF_ICON,
+      tag: 'tac-system-' + Date.now(),
+      vibrate: [200, 100, 200]
+    });
+    n.onclick = function() {
+      window.focus();
+      n.close();
+    };
+    // Getarkan HP kalau didukung (tambahan efek di Android)
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    // Auto tutup setelah beberapa detik biar tidak menumpuk
+    setTimeout(function() { n.close(); }, 8000);
+  } catch(e) {
+    console.error('Gagal mengirim notifikasi:', e);
+  }
 }
 
 // ── SIDEBAR ──
@@ -1005,7 +1083,7 @@ function setRole(r) {
 // ── AUTH ──
 var ADMIN_EMAILS = ['admin@tac.com'];
 function isAdminEmail(email) {
-  return ADMIN_EMAILS.some(function(a) { return a.toLowerCase() === email.toLowerCase(); });
+  return ADMIN_EMAILS.some(function(a) { return a.toLowerCase() === (email||'').toLowerCase(); });
 }
 async function doLogin() {
   var email = document.getElementById('l-email').value.trim();
@@ -1028,18 +1106,7 @@ async function doLogin() {
     const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
     if (error) throw error;
     currentUser = data.user;
-    if (role === 'admin') {
-      document.getElementById('adm-email-label').textContent = email;
-      show('pg-admin');
-      loadADMData();
-      loadADMBRGData();
-      startRealtimeAdmin();
-    } else {
-      document.getElementById('cm-name-label').textContent = email;
-      show('pg-cellman');
-      loadCMData();
-      startRealtimeCellman();
-    }
+    enterApp(role, email);
   } catch(e) {
     err.innerHTML = '<div class="msg err">Email / password salah</div>';
   } finally {
@@ -1047,9 +1114,35 @@ async function doLogin() {
   }
 }
 
+// Masuk ke halaman sesuai role (dipakai saat login manual maupun restore session)
+function enterApp(r, email) {
+  role = r;
+  if (r === 'admin') {
+    document.getElementById('adm-email-label').textContent = email;
+    show('pg-admin');
+    loadADMData();
+    loadADMBRGData();
+    startRealtimeAdmin();
+  } else {
+    document.getElementById('cm-name-label').textContent = email;
+    show('pg-cellman');
+    loadCMData();
+    startRealtimeCellman();
+  }
+  refreshNotifUI();
+
+  // Kalau izin notifikasi sudah pernah diberikan sebelumnya, langsung pastikan
+  // push subscription untuk device ini tersimpan (misal setelah ganti browser/HP baru)
+  if (notifSupported() && Notification.permission === 'granted') {
+    subscribeToPush();
+  }
+}
+
 async function doLogout() {
   stopRealtime();
+  await unsubscribeFromPush();
   await db.auth.signOut();
+  currentUser = null;
   show('pg-login');
 }
 
@@ -1057,6 +1150,35 @@ function show(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
   document.getElementById(id).classList.add('on');
 }
+
+// ── RESTORE SESSION SAAT REFRESH (F5) ──
+async function checkSession() {
+  var restoring = document.getElementById('l-restoring');
+  restoring.style.display = 'block';
+  try {
+    const { data, error } = await db.auth.getSession();
+    if (error) throw error;
+    var session = data && data.session;
+    if (session && session.user) {
+      currentUser = session.user;
+      var email = currentUser.email;
+      var r = isAdminEmail(email) ? 'admin' : 'cellman';
+      enterApp(r, email);
+    }
+  } catch(e) {
+    console.error('checkSession error:', e);
+  } finally {
+    restoring.style.display = 'none';
+  }
+}
+
+// Dengarkan perubahan auth (misal token refresh / logout dari tab lain)
+db.auth.onAuthStateChange(function(event, session) {
+  if (event === 'SIGNED_OUT') {
+    currentUser = null;
+    show('pg-login');
+  }
+});
 
 // ── SUBMENU TOGGLE ──
 function toggleSubmenu(key) {
@@ -1181,6 +1303,10 @@ async function loadCMData() {
   filterCMTable();
 }
 
+var ITEMS_PER_PAGE = 10;
+var cmPage = 1;
+var cmFilteredRows = [];
+
 function filterCMTable() {
   var search = (document.getElementById('cm-search').value || '').toLowerCase();
   var filtered = cmData.filter(function(r) {
@@ -1193,15 +1319,44 @@ function filterCMTable() {
     );
     return ok;
   });
-  filteredCache.cm = filtered;
-  pageState.cm = 1;
-  renderPagedTable('cm');
+  cmFilteredRows = filtered;   // ✅ variabel yang benar
+  cmPage = 1;                  // ✅
+  renderCMTablePage();         // ✅ fungsi yang benar
+}
+function cmGoToPage(delta) {
+  cmPage += delta;
+  renderCMTablePage();
+}
+
+function renderCMTablePage() {
+  var totalPages = Math.max(1, Math.ceil(cmFilteredRows.length / ITEMS_PER_PAGE));
+  if (cmPage > totalPages) cmPage = totalPages;
+  if (cmPage < 1) cmPage = 1;
+  var start = (cmPage - 1) * ITEMS_PER_PAGE;
+  var pageRows = cmFilteredRows.slice(start, start + ITEMS_PER_PAGE);
+  renderCMTable(pageRows, start);
+
+  var info = document.getElementById('cm-pager-info');
+  if (info) info.textContent = cmPage + ' / ' + totalPages;
+  var pager = document.getElementById('cm-pager');
+  if (pager) {
+    var btns = pager.querySelectorAll('button');
+    btns[0].disabled = cmPage <= 1;
+    btns[1].disabled = cmPage >= totalPages;
+  }
 }
 
 function renderCMTable(rows, offset) {
   offset = offset || 0;
   var html = '';
   rows.forEach(function(r, i) {
+    var locked = LOCKED_STATUSES_FOR_CELLMAN.includes(r.status);
+    var actionCell = locked
+      ? '<span class="act-locked">🔒 Terkunci</span>'
+      : '<div class="act-cell">' +
+          '<button class="btn-icon edt" data-id="' + r.id + '" data-caller="cm" onclick="openEditModal(this.dataset.id,this.dataset.caller)">✏️</button>' +
+          '<button class="btn-icon del" data-id="' + r.id + '" data-caller="cm" onclick="hapusData(this.dataset.id,this.dataset.caller)">🗑️</button>' +
+        '</div>';
     html += '<tr>' +
       '<td>' + (offset+i+1) + '</td>' +
       '<td>' + (r.nama||'-') + '</td>' +
@@ -1215,10 +1370,7 @@ function renderCMTable(rows, offset) {
       '<td>' + (r.note||'-') + '</td>' +
       '<td>' + badge(r.status) + '</td>' +
       '<td>' + (r.action_by || '<span style="color:#ccc;">—</span>') + '</td>' +
-      '<td><div class="act-cell">' +
-        '<button class="btn-icon edt" data-id="' + r.id + '" data-caller="cm" onclick="openEditModal(this.dataset.id,this.dataset.caller)">✏️</button>' +
-        '<button class="btn-icon del" data-id="' + r.id + '" data-caller="cm" onclick="hapusData(this.dataset.id,this.dataset.caller)">🗑️</button>' +
-      '</div></td></tr>';
+      '<td>' + actionCell + '</td></tr>';
   });
   document.getElementById('cm-tbody').innerHTML = html ||
     '<tr><td colspan="13" style="text-align:center;padding:20px;color:#888;">— tidak ada data —</td></tr>';
@@ -1282,7 +1434,7 @@ async function loadBRGData() {
 function filterBRGTable() {
   var search = (document.getElementById('brg-search').value || '').toLowerCase();
   var filtered = brgData.filter(function(r) {
-    var ok = !brgStatusFilter || r.status === brgStatusFilter;
+    var ok = !brgStatusFilter || r.status === brgStatusFilter; // ← tambahkan ini
     if (search) ok = ok && (
       (r.nama||'').toLowerCase().includes(search) ||
       (r.item_desc||'').toLowerCase().includes(search) ||
@@ -1290,15 +1442,48 @@ function filterBRGTable() {
     );
     return ok;
   });
-  filteredCache.brg = filtered;
-  pageState.brg = 1;
-  renderPagedTable('brg');
+  brgFilteredRows = filtered;
+  brgPage = 1;
+  renderBRGTablePage();
+}
+
+var brgPage = 1;
+var brgFilteredRows = [];
+
+function brgGoToPage(delta) {
+  brgPage += delta;
+  renderBRGTablePage();
+}
+
+function renderBRGTablePage() {
+  var totalPages = Math.max(1, Math.ceil(brgFilteredRows.length / ITEMS_PER_PAGE));
+  if (brgPage > totalPages) brgPage = totalPages;
+  if (brgPage < 1) brgPage = 1;
+  var start = (brgPage - 1) * ITEMS_PER_PAGE;
+  var pageRows = brgFilteredRows.slice(start, start + ITEMS_PER_PAGE);
+  renderBRGTable(pageRows, 'brg-tbody', 'cm', start);
+
+  var info = document.getElementById('brg-pager-info');
+  if (info) info.textContent = brgPage + ' / ' + totalPages;
+  var pager = document.getElementById('brg-pager');
+  if (pager) {
+    var btns = pager.querySelectorAll('button');
+    btns[0].disabled = brgPage <= 1;
+    btns[1].disabled = brgPage >= totalPages;
+  }
 }
 
 function renderBRGTable(rows, tbodyId, caller, offset) {
   offset = offset || 0;
   var html = '';
   rows.forEach(function(r, i) {
+    var locked = caller === 'cm' && LOCKED_STATUSES_FOR_CELLMAN.includes(r.status);
+    var actionCell = locked
+      ? '<span class="act-locked">🔒 Terkunci</span>'
+      : '<div class="act-cell">' +
+          '<button class="btn-icon edt" data-id="' + String(r.id) + '" data-caller="' + caller + '" onclick="openEditModalBRG(this.dataset.id,this.dataset.caller)">✏️</button>' +
+          '<button class="btn-icon del" data-id="' + String(r.id) + '" data-caller="brg-' + caller + '" onclick="hapusData(this.dataset.id,this.dataset.caller)">🗑️</button>' +
+        '</div>';
     html += '<tr>' +
       '<td>' + (offset+i+1) + '</td>' +
       '<td>' + (r.nama||'-') + '</td>' +
@@ -1313,10 +1498,7 @@ function renderBRGTable(rows, tbodyId, caller, offset) {
       '<td>' + (r.reason_admin || '<span style="color:#ccc;">—</span>') + '</td>' +
       '<td>' + badge(r.penyelesaian || r.status) + '</td>' +
       '<td>' + (r.action_by || '<span style="color:#ccc;">—</span>') + '</td>' +
-      '<td><div class="act-cell">' +
-        '<button class="btn-icon edt" data-id="' + String(r.id) + '" data-caller="' + caller + '" onclick="openEditModalBRG(this.dataset.id,this.dataset.caller)">✏️</button>' +
-        '<button class="btn-icon del" data-id="' + String(r.id) + '" data-caller="brg-' + caller + '" onclick="hapusData(this.dataset.id,this.dataset.caller)">🗑️</button>' +
-      '</div></td></tr>';
+      '<td>' + actionCell + '</td></tr>';
   });
   document.getElementById(tbodyId).innerHTML = html ||
     '<tr><td colspan="14" style="text-align:center;padding:20px;color:#888;">— tidak ada data —</td></tr>';
@@ -1337,6 +1519,9 @@ async function loadADMData() {
   filterTable();
 }
 
+var admPage = 1;
+var admFilteredRows = [];
+
 function filterTable() {
   var search = (document.getElementById('adm-search').value || '').toLowerCase();
   var fSt    = document.getElementById('adm-filter').value;
@@ -1350,15 +1535,38 @@ function filterTable() {
     );
     return ok;
   });
-  filteredCache.adm = filtered;
-  pageState.adm = 1;
-  renderPagedTable('adm');
+  admFilteredRows = filtered;
+  admPage = 1;
+  renderADMTablePage();
 }
 
-function renderADMTable(rows, offset) {
+function admGoToPage(delta) {
+  admPage += delta;
+  renderADMTablePage();
+}
+
+function renderADMTablePage() {
+  var totalPages = Math.max(1, Math.ceil(admFilteredRows.length / ITEMS_PER_PAGE));
+  if (admPage > totalPages) admPage = totalPages;
+  if (admPage < 1) admPage = 1;
+  var start = (admPage - 1) * ITEMS_PER_PAGE;
+  var pageRows = admFilteredRows.slice(start, start + ITEMS_PER_PAGE);
+  renderADMTable(pageRows, start);
+
+  var info = document.getElementById('adm-pager-info');
+  if (info) info.textContent = admPage + ' / ' + totalPages;
+  var pager = document.getElementById('adm-pager');
+  if (pager) {
+    var btns = pager.querySelectorAll('button');
+    btns[0].disabled = admPage <= 1;
+    btns[1].disabled = admPage >= totalPages;
+  }
+}
+
+function renderADMTable(filtered, offset) {
   offset = offset || 0;
   var html = '';
-  rows.forEach(function(r, i) {
+  filtered.forEach(function(r, i) {
     html += '<tr>' +
       '<td>' + (offset+i+1) + '</td>' +
       '<td>' + (r.nama||'-') + '</td>' +
@@ -1409,9 +1617,35 @@ function filterADMBRGTable() {
     );
     return ok;
   });
-  filteredCache['adm-brg'] = filtered;
-  pageState['adm-brg'] = 1;
-  renderPagedTable('adm-brg');
+  admBrgFilteredRows = filtered;
+  admBrgPage = 1;
+  renderADMBRGTablePage();
+}
+
+var admBrgPage = 1;
+var admBrgFilteredRows = [];
+
+function admBrgGoToPage(delta) {
+  admBrgPage += delta;
+  renderADMBRGTablePage();
+}
+
+function renderADMBRGTablePage() {
+  var totalPages = Math.max(1, Math.ceil(admBrgFilteredRows.length / ITEMS_PER_PAGE));
+  if (admBrgPage > totalPages) admBrgPage = totalPages;
+  if (admBrgPage < 1) admBrgPage = 1;
+  var start = (admBrgPage - 1) * ITEMS_PER_PAGE;
+  var pageRows = admBrgFilteredRows.slice(start, start + ITEMS_PER_PAGE);
+  renderBRGTable(pageRows, 'adm-brg-tbody', 'adm', start);
+
+  var info = document.getElementById('adm-brg-pager-info');
+  if (info) info.textContent = admBrgPage + ' / ' + totalPages;
+  var pager = document.getElementById('adm-brg-pager');
+  if (pager) {
+    var btns = pager.querySelectorAll('button');
+    btns[0].disabled = admBrgPage <= 1;
+    btns[1].disabled = admBrgPage >= totalPages;
+  }
 }
 
 // ── MODAL EDIT TAC ──
@@ -1420,6 +1654,10 @@ function openEditModal(id, caller) {
     ? cmData.find(r => r.id === id)
     : allData.find(r => r.id === id);
   if (!rec) return;
+  if (caller === 'cm' && LOCKED_STATUSES_FOR_CELLMAN.includes(rec.status)) {
+    alert('Data ini sudah berstatus ' + rec.status + ' dan tidak dapat diubah lagi oleh Cellman.');
+    return;
+  }
   editId = id; editCaller = caller;
   document.getElementById('me-nama').value      = rec.nama        || '';
   document.getElementById('me-tanggal').value   = rec.tanggal     || '';
@@ -1442,7 +1680,7 @@ function openEditModal(id, caller) {
   document.getElementById('me-action-by-hint').style.display = isCM ? '' : 'none';
   document.getElementById('me-action-by-label').textContent = isCM
     ? 'ACTION BY (info)'
-    : 'ACTION BY (nama admin — isi manual)';
+    : 'ACTION';
 
   document.getElementById('modal').style.display = 'flex';
 }
@@ -1494,6 +1732,10 @@ function openEditModalBRG(id, caller) {
     alert('Data tidak ditemukan. Klik ↺ REFRESH lalu coba lagi.');
     return;
   }
+  if (caller === 'cm' && LOCKED_STATUSES_FOR_CELLMAN.includes(rec.status)) {
+    alert('Data ini sudah berstatus ' + rec.status + ' dan tidak dapat diubah lagi oleh Cellman.');
+    return;
+  }
   editBrgId = id; editCaller = caller;
   document.getElementById('mbrg-nama').value         = rec.nama         || '';
   document.getElementById('mbrg-tanggal').value      = rec.tanggal      || '';
@@ -1505,17 +1747,20 @@ function openEditModalBRG(id, caller) {
   document.getElementById('mbrg-note').value         = rec.note         || '';
   document.getElementById('mbrg-status').value       = rec.status       || 'DRAFT';
   document.getElementById('mbrg-action-by').value    = rec.action_by    || '';
+  document.getElementById('mbrg-reason-admin').value = rec.reason_admin || '';
 
   var isAdm = caller === 'adm';
   // STATUS: sembunyikan untuk CM
   document.getElementById('mbrg-status-wrap').style.display = isAdm ? '' : 'none';
+  // REASON ADMIN: hanya tampil & bisa diisi saat Admin
+  document.getElementById('mbrg-reason-admin-wrap').style.display = isAdm ? '' : 'none';
   // ACTION BY: selalu tampil, tapi readonly jika CM
   document.getElementById('mbrg-actionby-wrap').style.display = '';
   document.getElementById('mbrg-action-by').disabled = !isAdm;
   document.getElementById('mbrg-action-by-hint').style.display = !isAdm ? '' : 'none';
   document.getElementById('mbrg-action-by-label').textContent = !isAdm
     ? 'ACTION BY (info)'
-    : 'ACTION BY (nama admin — isi manual)';
+    : 'ACTION BY';
 
   document.getElementById('modal-brg').style.display = 'flex';
 }
@@ -1545,9 +1790,9 @@ async function saveEditBRG() {
     updates.action_by    = actionName ? actionName.toUpperCase() : (currentUser ? currentUser.email : '');
     updates.action_at    = new Date().toISOString();
     updates.penyelesaian = document.getElementById('mbrg-status').value;
-    var raWrap = document.getElementById('mbrg-reason-admin');
-    if (raWrap) {
-      var ra = raWrap.value.trim();
+    var raInput = document.getElementById('mbrg-reason-admin');
+    if (raInput) {
+      var ra = raInput.value.trim();
       updates.reason_admin = ra ? ra.toUpperCase() : '-';
     }
   }
@@ -1570,6 +1815,12 @@ function hapusData(id, caller) {
   else if (caller === 'adm') rec = allData.find(r => r.id === id);
   else if (caller === 'brg-cm')  rec = brgData.find(r => r.id === id);
   else if (caller === 'brg-adm') rec = admBrgData.find(r => r.id === id);
+
+  if ((caller === 'cm' || caller === 'brg-cm') && rec && LOCKED_STATUSES_FOR_CELLMAN.includes(rec.status)) {
+    alert('Data ini sudah berstatus ' + rec.status + ' dan tidak dapat dihapus oleh Cellman.');
+    return;
+  }
+
   delId = id; delCaller = caller;
   document.getElementById('del-info').textContent =
     'Item: ' + (rec ? rec.item_desc : id) + ' — tindakan ini tidak dapat dibatalkan.';
@@ -1603,13 +1854,13 @@ async function konfirmasiHapus() {
 
 // ── BADGE ──
 function badge(s) {
-  var cls = { DRAFT:'draft', WAIT:'wait', DONE:'done' }[s] || 'draft';
+  var cls = { DRAFT:'draft', WAIT:'wait', POSTED:'posted', DONE:'done' }[s] || 'draft';
   return '<span class="badge ' + cls + '">' + (s||'DRAFT') + '</span>';
 }
 
 // ── EXCEL HELPERS ──
 function buildExcelData(rows) {
-  var headers = ['NO','NAMA','TANGGAL','FROM SUB IO','TO SUB IO','UK MOTIF','ITEM DESC','LOT NO','QTY','NOTE','STATUS','ACTION BY','ACTION AT'];
+  var headers = ['NO','NAMA','TANGGAL','FROM SUB IO','TO SUB IO','UK MOTIF','MOTIF','LOT NO','QTY','NOTE','STATUS','ACTION','ACTION AT'];
   var data = [headers];
   rows.forEach(function(r, i) {
     data.push([
@@ -1632,7 +1883,7 @@ function buildExcelData(rows) {
 }
 
 function buildExcelDataBRG(rows) {
-  var headers = ['NO','NAMA','TANGGAL','SUBINVENTORY','UK MOTIF','ITEM DESC','LOT NO','QTY','REASON','STATUS','ACTION BY','ACTION AT'];
+  var headers = ['NO','NAMA','TANGGAL','SUBINVENTORY','UK MOTIF','MOTIF','LOT NO','QTY','REASON','STATUS','ACTION','ACTION AT'];
   var data = [headers];
   rows.forEach(function(r, i) {
     data.push([
@@ -1734,7 +1985,7 @@ async function downloadExcelBRGADM() {
   msg.innerHTML = '<div class="msg ok">✓ File berhasil didownload (' + data.length + ' baris)</div>';
 }
 
-// ── TOAST NOTIFIKASI ──
+// ── TOAST NOTIFIKASI (dalam halaman) ──
 function showToast(icon, title, desc) {
   var container = document.getElementById('toast-container');
   var el = document.createElement('div');
@@ -1748,104 +1999,6 @@ function showToast(icon, title, desc) {
     setTimeout(function() { el.remove(); }, 300);
   }, 4500);
 }
-
-// ── INBOX NOTIFIKASI (topbar) ──
-var inboxData = { cm: [], adm: [] };
-var inboxSeq = 0;
-
-function addInboxNotif(scope, icon, title, desc, target) {
-  inboxSeq++;
-  inboxData[scope].unshift({
-    id: inboxSeq,
-    icon: icon,
-    title: title,
-    desc: desc || '',
-    target: target || null,
-    time: new Date(),
-    read: false
-  });
-  if (inboxData[scope].length > 30) inboxData[scope].length = 30;
-  renderInbox(scope);
-}
-
-function escapeHtml(s) {
-  return String(s == null ? '' : s)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function formatInboxTime(d) {
-  var diff = Math.floor((Date.now() - d.getTime()) / 1000);
-  if (diff < 60) return 'baru saja';
-  if (diff < 3600) return Math.floor(diff/60) + ' menit lalu';
-  if (diff < 86400) return Math.floor(diff/3600) + ' jam lalu';
-  return d.toLocaleDateString('id-ID') + ' ' + d.toTimeString().slice(0,5);
-}
-
-function renderInbox(scope) {
-  var list = inboxData[scope];
-  var unread = list.filter(function(n) { return !n.read; }).length;
-  var countEl = document.getElementById(scope + '-inbox-count');
-  if (countEl) {
-    countEl.textContent = unread > 99 ? '99+' : unread;
-    countEl.style.display = unread > 0 ? 'inline-block' : 'none';
-  }
-  var listEl = document.getElementById(scope + '-inbox-list');
-  if (!listEl) return;
-  if (!list.length) {
-    listEl.innerHTML = '<div class="inbox-empty">— belum ada notifikasi —</div>';
-    return;
-  }
-  var html = '';
-  list.forEach(function(n) {
-    html += '<div class="inbox-item ' + (n.read ? '' : 'unread') + '" onclick="openInboxItem(' + n.id + ',\'' + scope + '\')">' +
-      (n.read ? '' : '<span class="ii-dot"></span>') +
-      '<span class="ii-icon">' + n.icon + '</span>' +
-      '<div class="ii-body">' +
-        '<div class="ii-title">' + escapeHtml(n.title) + '</div>' +
-        '<div class="ii-desc">' + escapeHtml(n.desc) + '</div>' +
-        '<div class="ii-time">' + formatInboxTime(n.time) + '</div>' +
-      '</div></div>';
-  });
-  listEl.innerHTML = html;
-}
-
-function toggleInbox(scope) {
-  var panel = document.getElementById(scope + '-inbox-panel');
-  if (!panel) return;
-  var otherScope = scope === 'cm' ? 'adm' : 'cm';
-  var otherPanel = document.getElementById(otherScope + '-inbox-panel');
-  if (otherPanel) otherPanel.classList.remove('open');
-  panel.classList.toggle('open');
-  if (panel.classList.contains('open')) renderInbox(scope);
-}
-
-function openInboxItem(id, scope) {
-  var item = inboxData[scope].find(function(n) { return n.id === id; });
-  if (!item) return;
-  item.read = true;
-  renderInbox(scope);
-  var panel = document.getElementById(scope + '-inbox-panel');
-  if (panel) panel.classList.remove('open');
-  if (item.target) {
-    if (scope === 'adm') admShowPage(item.target); else cmShowPage(item.target);
-  }
-}
-
-function markAllReadInbox(scope) {
-  inboxData[scope].forEach(function(n) { n.read = true; });
-  renderInbox(scope);
-}
-
-document.addEventListener('click', function(e) {
-  ['cm', 'adm'].forEach(function(scope) {
-    var panel = document.getElementById(scope + '-inbox-panel');
-    if (!panel || !panel.classList.contains('open')) return;
-    var wrapper = panel.closest('.inbox-wrap');
-    if (wrapper && !wrapper.contains(e.target)) {
-      panel.classList.remove('open');
-    }
-  });
-});
 
 // ── BADGE MENU ──
 function bumpBadge(key) {
@@ -1869,7 +2022,7 @@ function startRealtimeAdmin() {
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'tac' }, function(payload) {
       var r = payload.new;
       showToast('📝', 'TAC baru masuk', (r.nama || '-') + ' • ' + (r.item_desc || '-'));
-      addInboxNotif('adm', '📝', 'TAC baru: ' + (r.nama || '-'), (r.item_desc || '-') + ' • ' + (r.lot_no || '-') + ' • qty ' + (r.qty || '-'), 'data-tac');
+      sendNativeNotification('📝 TAC Baru Masuk', (r.nama || '-') + ' • ' + (r.item_desc || '-') + ' • ' + (r.qty || '-') + ' pcs');
       bumpBadge('adm-tac');
       loadADMData();
     })
@@ -1879,7 +2032,7 @@ function startRealtimeAdmin() {
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'barang_bermasalah' }, function(payload) {
       var r = payload.new;
       showToast('⚠️', 'Barang Bermasalah baru', (r.nama || '-') + ' • ' + (r.item_desc || '-'));
-      addInboxNotif('adm', '⚠️', 'Barang Bermasalah: ' + (r.nama || '-'), (r.item_desc || '-') + ' • ' + (r.lot_no || '-') + ' • qty ' + (r.qty || '-'), 'data-brg');
+      sendNativeNotification('⚠️ Barang Bermasalah Baru', (r.nama || '-') + ' • ' + (r.item_desc || '-'));
       bumpBadge('adm-brg');
       loadADMBRGData();
     })
@@ -1898,7 +2051,7 @@ function startRealtimeCellman() {
       var r = payload.new;
       if (r.created_by !== email) return;
       showToast('✅', 'Data TAC Anda diupdate Admin', (r.item_desc || '-') + ' • status: ' + (r.status || '-'));
-      addInboxNotif('cm', '✅', 'TAC diupdate Admin', (r.item_desc || '-') + ' • status: ' + (r.status || '-') + (r.action_by ? ' • by ' + r.action_by : ''), 'form-tac');
+      sendNativeNotification('✅ TAC Anda Diupdate', (r.item_desc || '-') + ' • status: ' + (r.status || '-'));
       bumpBadge('cm-tac');
       loadCMData();
     })
@@ -1906,7 +2059,7 @@ function startRealtimeCellman() {
       var r = payload.new;
       if (r.created_by !== email) return;
       showToast('✅', 'Barang Bermasalah diupdate Admin', (r.item_desc || '-') + ' • status: ' + (r.status || '-'));
-      addInboxNotif('cm', '✅', 'Barang Bermasalah diupdate', (r.item_desc || '-') + ' • status: ' + (r.status || '-') + (r.action_by ? ' • by ' + r.action_by : ''), 'form-brg');
+      sendNativeNotification('✅ Barang Bermasalah Diupdate', (r.item_desc || '-') + ' • status: ' + (r.status || '-'));
       bumpBadge('cm-brg');
       loadBRGData();
     })
@@ -1935,6 +2088,12 @@ window.addEventListener('load', function() {
   document.getElementById('adm-brg-rep-dari').value   = firstDay;
   document.getElementById('adm-brg-rep-sampai').value = today;
   document.getElementById('l-email').value = 'cellman@tac.com';
+
+  // Daftarkan service worker sedini mungkin (tidak perlu izin notifikasi dulu)
+  registerServiceWorker();
+
+  // Cek apakah ada sesi login yang masih aktif (menangani F5 / refresh)
+  checkSession();
 });
 
 document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
