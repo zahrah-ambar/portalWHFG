@@ -852,8 +852,8 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
 </div>
 
 <script>
-const SUPA_URL = 'https://eyqgrwfigistgiddsypi.supabase.co';
-const SUPA_KEY = 'sb_publishable_E9-SgMtkL9NlfAYRl0uiXA_n2GQU30I';
+const SUPA_URL = 'https://addgggshvsvnzbzdbgnq.supabase.co';
+const SUPA_KEY = 'sb_publishable__xCcA-NNlTCRpF8K5c5LUw_k2I_1789';
 const { createClient } = supabase;
 const db = createClient(SUPA_URL, SUPA_KEY, {
   auth: {
@@ -1434,7 +1434,7 @@ async function loadBRGData() {
 function filterBRGTable() {
   var search = (document.getElementById('brg-search').value || '').toLowerCase();
   var filtered = brgData.filter(function(r) {
-    var ok = !brgStatusFilter || r.status === brgStatusFilter; // ← tambahkan ini
+    var ok = !brgStatusFilter || r.status === brgStatusFilter; // baris 1437 (ada komentar "← tambahkan ini")
     if (search) ok = ok && (
       (r.nama||'').toLowerCase().includes(search) ||
       (r.item_desc||'').toLowerCase().includes(search) ||
@@ -2128,7 +2128,8 @@ window.addEventListener('popstate', function(e) {
 
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Enter' && document.getElementById('pg-login').classList.contains('on')) doLogin();
-  if (e.key === 'Enter' && document.getElementById('cm-search') === document.activeElement) filterCMTable();
+  if (e.key === 'Enter' && document.getElementById('cm-search') === document.activeElement) filterCMTab\
+le();
   if (e.key === 'Enter' && document.getElementById('adm-search') === document.activeElement) filterTable();
   if (e.key === 'Enter' && document.getElementById('brg-search') === document.activeElement) filterBRGTable();
   if (e.key === 'Enter' && document.getElementById('adm-brg-search') === document.activeElement) filterADMBRGTable();
