@@ -327,6 +327,13 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <input id="cm-search" type="text" placeholder="cari nama / motif / lot..." oninput="filterCMTable()">
             <button onclick="filterCMTable()" title="Cari">🔍</button>
           </div>
+          <select id="cm-filter" onchange="filterCMTable()" style="width:130px;">
+            <option value="">SEMUA STATUS</option>
+            <option value="DRAFT">DRAFT</option>
+            <option value="WAIT">WAIT</option>
+            <option value="POSTED">POSTED</option>
+            <option value="DONE">DONE</option>
+          </select>
           <button onclick="loadCMData()" class="outline" style="font-size:12px;">↺ REFRESH</button>
         </div>
         <div style="overflow-x:auto;">
@@ -430,6 +437,13 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <input id="brg-search" type="text" placeholder="cari nama / item / lot..." oninput="filterBRGTable()">
             <button onclick="filterBRGTable()" title="Cari">🔍</button>
           </div>
+          <select id="brg-filter" onchange="filterBRGTable()" style="width:130px;">
+            <option value="">SEMUA STATUS</option>
+            <option value="DRAFT">DRAFT</option>
+            <option value="WAIT">WAIT</option>
+            <option value="POSTED">POSTED</option>
+            <option value="DONE">DONE</option>
+          </select>
           <button onclick="loadBRGData()" class="outline" style="font-size:12px;">↺ REFRESH</button>
         </div>
         <div style="overflow-x:auto;">
@@ -1350,14 +1364,17 @@ var cmFilteredRows = [];
 
 function filterCMTable() {
   var search = (document.getElementById('cm-search').value || '').toLowerCase();
-  var filtered = search
-    ? cmData.filter(r =>
-        (r.nama||'').toLowerCase().includes(search) ||
-        (r.item_desc||'').toLowerCase().includes(search) ||
-        (r.lot_no||'').toLowerCase().includes(search) ||
-        (r.note||'').toLowerCase().includes(search)
-      )
-    : cmData;
+  var fSt    = document.getElementById('cm-filter').value;
+  var filtered = cmData.filter(function(r) {
+    var ok = !fSt || r.status === fSt;
+    if (search) ok = ok && (
+      (r.nama||'').toLowerCase().includes(search) ||
+      (r.item_desc||'').toLowerCase().includes(search) ||
+      (r.lot_no||'').toLowerCase().includes(search) ||
+      (r.note||'').toLowerCase().includes(search)
+    );
+    return ok;
+  });
   cmFilteredRows = applySortStatus('cm_tac', filtered);
   cmPage = 1;
   renderCMTablePage();
@@ -1473,13 +1490,16 @@ async function loadBRGData() {
 
 function filterBRGTable() {
   var search = (document.getElementById('brg-search').value || '').toLowerCase();
-  var filtered = search
-    ? brgData.filter(r =>
-        (r.nama||'').toLowerCase().includes(search) ||
-        (r.item_desc||'').toLowerCase().includes(search) ||
-        (r.lot_no||'').toLowerCase().includes(search)
-      )
-    : brgData;
+  var fSt    = document.getElementById('brg-filter').value;
+  var filtered = brgData.filter(function(r) {
+    var ok = !fSt || r.status === fSt;
+    if (search) ok = ok && (
+      (r.nama||'').toLowerCase().includes(search) ||
+      (r.item_desc||'').toLowerCase().includes(search) ||
+      (r.lot_no||'').toLowerCase().includes(search)
+    );
+    return ok;
+  });
   brgFilteredRows = applySortStatus('cm_brg', filtered);
   brgPage = 1;
   renderBRGTablePage();
