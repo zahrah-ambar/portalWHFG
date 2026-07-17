@@ -20,10 +20,12 @@ table{width:100%;border-collapse:collapse;font-size:13px;}
 th{background:#000;color:#fff;padding:7px 8px;text-align:left;white-space:nowrap;}
 th.th-sort{cursor:pointer;user-select:none;}
 th.th-sort:hover{background:#222;}
-th.th-sort .sort-arrow{font-size:10px;opacity:.6;}
+th.th-sort .sort-arrow{font-size:10px;opacity:.6;cursor:pointer;}
 th.th-sort.sort-asc .sort-arrow::after{content:'▲';opacity:1;}
 th.th-sort.sort-desc .sort-arrow::after{content:'▼';opacity:1;}
 th.th-sort:not(.sort-asc):not(.sort-desc) .sort-arrow::after{content:'⇅';}
+th .th-status-label{cursor:pointer;}
+th .th-filter-select{margin:0 6px;font-size:10px;padding:2px 6px;width:auto;background:#fff;color:#000;border:1px solid #fff;border-radius:10px;cursor:pointer;vertical-align:middle;}
 td{padding:7px 8px;border-bottom:1px solid #ddd;vertical-align:middle;}
 tr:hover td{background:#f5f5f5;}
 .page{display:none;}
@@ -327,13 +329,6 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <input id="cm-search" type="text" placeholder="cari nama / motif / lot..." oninput="filterCMTable()">
             <button onclick="filterCMTable()" title="Cari">🔍</button>
           </div>
-          <select id="cm-filter" onchange="filterCMTable()" style="width:130px;">
-            <option value="">SEMUA STATUS</option>
-            <option value="DRAFT">DRAFT</option>
-            <option value="WAIT">WAIT</option>
-            <option value="POSTED">POSTED</option>
-            <option value="DONE">DONE</option>
-          </select>
           <button onclick="loadCMData()" class="outline" style="font-size:12px;">↺ REFRESH</button>
         </div>
         <div style="overflow-x:auto;">
@@ -342,7 +337,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>FROM SUB IO</th>
                 <th>TO SUB IO</th><th>UK MOTIF</th><th>MOTIF</th><th>LOT NO</th>
-                <th>QTY</th><th>CATATAN</th><th id="th-status-cm_tac" class="th-sort" onclick="toggleStatusSort('cm_tac')">STATUS <span class="sort-arrow"></span></th><th>ACTION</th><th>EDIT</th>
+                <th>QTY</th><th>CATATAN</th><th id="th-status-cm_tac" class="th-sort">STATUS <select id="cm-filter" class="th-filter-select" onclick="event.stopPropagation()" onchange="filterCMTable()"><option value="">SEMUA</option><option value="DRAFT">DRAFT</option><option value="WAIT">WAIT</option><option value="POSTED">POSTED</option><option value="DONE">DONE</option></select><span class="sort-arrow" onclick="toggleStatusSort('cm_tac')"></span></th><th>ACTION</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="cm-tbody">
@@ -437,13 +432,6 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <input id="brg-search" type="text" placeholder="cari nama / item / lot..." oninput="filterBRGTable()">
             <button onclick="filterBRGTable()" title="Cari">🔍</button>
           </div>
-          <select id="brg-filter" onchange="filterBRGTable()" style="width:130px;">
-            <option value="">SEMUA STATUS</option>
-            <option value="DRAFT">DRAFT</option>
-            <option value="WAIT">WAIT</option>
-            <option value="POSTED">POSTED</option>
-            <option value="DONE">DONE</option>
-          </select>
           <button onclick="loadBRGData()" class="outline" style="font-size:12px;">↺ REFRESH</button>
         </div>
         <div style="overflow-x:auto;">
@@ -452,7 +440,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>SUBINVENTORY</th><th>UK MOTIF</th>
                 <th>MOTIF</th><th>LOT NO</th><th>JML</th>
-                <th>ALASAN</th><th id="th-status-cm_brg" class="th-sort" onclick="toggleStatusSort('cm_brg')">STATUS <span class="sort-arrow"></span></th><th>ALASAN ADMIN</th><th>PENYELESAIAN</th><th>ACTION</th><th>EDIT</th>
+                <th>ALASAN</th><th id="th-status-cm_brg" class="th-sort">STATUS <select id="brg-filter" class="th-filter-select" onclick="event.stopPropagation()" onchange="filterBRGTable()"><option value="">SEMUA</option><option value="DRAFT">DRAFT</option><option value="WAIT">WAIT</option><option value="POSTED">POSTED</option><option value="DONE">DONE</option></select><span class="sort-arrow" onclick="toggleStatusSort('cm_brg')"></span></th><th>ALASAN ADMIN</th><th>PENYELESAIAN</th><th>ACTION</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="brg-tbody">
@@ -556,13 +544,6 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <input id="adm-search" type="text" placeholder="cari nama / item / lot..." oninput="filterTable()">
             <button onclick="filterTable()" title="Cari">🔍</button>
           </div>
-          <select id="adm-filter" onchange="filterTable()" style="width:130px;">
-            <option value="">SEMUA STATUS</option>
-            <option value="DRAFT">DRAFT</option>
-            <option value="WAIT">WAIT</option>
-            <option value="POSTED">POSTED</option>
-            <option value="DONE">DONE</option>
-          </select>
           <button onclick="loadADMData()" class="outline" style="font-size:12px;">↺ REFRESH</button>
         </div>
         <div id="adm-msg"></div>
@@ -572,7 +553,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>FROM SUB IO</th>
                 <th>TO SUB IO</th><th>UK MOTIF</th><th>MOTIF</th><th>LOT NO</th>
-                <th>QTY</th><th>NOTE</th><th id="th-status-adm_tac" class="th-sort" onclick="toggleStatusSort('adm_tac')">STATUS <span class="sort-arrow"></span></th><th>ACTION</th><th>EDIT</th>
+                <th>QTY</th><th>NOTE</th><th id="th-status-adm_tac" class="th-sort">STATUS <select id="adm-filter" class="th-filter-select" onclick="event.stopPropagation()" onchange="filterTable()"><option value="">SEMUA</option><option value="DRAFT">DRAFT</option><option value="WAIT">WAIT</option><option value="POSTED">POSTED</option><option value="DONE">DONE</option></select><span class="sort-arrow" onclick="toggleStatusSort('adm_tac')"></span></th><th>ACTION</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="adm-tbody">
@@ -595,13 +576,6 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
             <input id="adm-brg-search" type="text" placeholder="cari nama / item / lot..." oninput="filterADMBRGTable()">
             <button onclick="filterADMBRGTable()" title="Cari">🔍</button>
           </div>
-          <select id="adm-brg-filter" onchange="filterADMBRGTable()" style="width:130px;">
-            <option value="">SEMUA STATUS</option>
-            <option value="DRAFT">DRAFT</option>
-            <option value="WAIT">WAIT</option>
-            <option value="POSTED">POSTED</option>
-            <option value="DONE">DONE</option>
-          </select>
           <button onclick="loadADMBRGData()" class="outline" style="font-size:12px;">↺ REFRESH</button>
         </div>
         <div id="adm-brg-msg"></div>
@@ -611,7 +585,7 @@ h2{font-size:15px;margin-bottom:14px;border-bottom:2px solid #000;padding-bottom
               <tr>
                 <th>NO</th><th>NAMA</th><th>TANGGAL</th><th>SUBINVENTORY</th><th>UK MOTIF</th>
                 <th>MOTIF</th><th>LOT NO</th><th>QTY</th>
-                <th>REASON</th><th id="th-status-adm_brg" class="th-sort" onclick="toggleStatusSort('adm_brg')">STATUS <span class="sort-arrow"></span></th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION</th><th>EDIT</th>
+                <th>REASON</th><th id="th-status-adm_brg" class="th-sort">STATUS <select id="adm-brg-filter" class="th-filter-select" onclick="event.stopPropagation()" onchange="filterADMBRGTable()"><option value="">SEMUA</option><option value="DRAFT">DRAFT</option><option value="WAIT">WAIT</option><option value="POSTED">POSTED</option><option value="DONE">DONE</option></select><span class="sort-arrow" onclick="toggleStatusSort('adm_brg')"></span></th><th>REASON ADMIN</th><th>PENYELESAIAN</th><th>ACTION</th><th>EDIT</th>
               </tr>
             </thead>
             <tbody id="adm-brg-tbody">
